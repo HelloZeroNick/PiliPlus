@@ -16,6 +16,7 @@ class _BarSetPageState extends State<BarSetPage> {
   late final String key;
   late final String title;
   late final List<Pair<EnumWithLabel, bool>> list;
+  late EdgeInsets padding;
 
   @override
   void initState() {
@@ -28,13 +29,20 @@ class _BarSetPageState extends State<BarSetPage> {
         .map((e) => Pair(first: e, second: cache?.contains(e.index) ?? true))
         .toList();
     if (cache != null && cache.isNotEmpty) {
-      final cacheIndex = {for (final (k, v) in cache.indexed) v: k};
+      final cacheIndex = {for (int i = 0; i < cache.length; i++) cache[i]: i};
       list.sort((a, b) {
         final indexA = cacheIndex[a.first.index] ?? cacheIndex.length;
         final indexB = cacheIndex[b.first.index] ?? cacheIndex.length;
         return indexA.compareTo(indexB);
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final viewPad = MediaQuery.viewPaddingOf(context);
+    padding = .only(top: 10, right: viewPad.right + 34, bottom: viewPad.bottom);
   }
 
   void saveEdit() {
@@ -72,9 +80,7 @@ class _BarSetPageState extends State<BarSetPage> {
       body: ReorderableListView(
         onReorder: onReorder,
         footer: Padding(
-          padding:
-              MediaQuery.viewPaddingOf(context).copyWith(top: 0, left: 0) +
-              const EdgeInsets.only(right: 34, top: 10),
+          padding: padding,
           child: const Align(
             alignment: Alignment.centerRight,
             child: Text('*长按拖动排序'),
