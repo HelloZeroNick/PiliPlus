@@ -298,7 +298,7 @@ packages:
       path: "."
       ref: main
       resolved-ref: "3947b1fec9d89a8bb11b6feda7a43787ed1e73a9"
-      url: "https://github.com/Starfallan/canvas_danmaku.git"
+      url: "https://gh.xmly.dev/https://github.com/Starfallan/canvas_danmaku.git"
     source: git
     version: "0.2.6"
   catcher_2:
@@ -323,7 +323,7 @@ packages:
       path: "packages/chat_bottom_container"
       ref: dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5
       resolved-ref: dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5
-      url: "https://github.com/qinshah/flutter_chat_packages.git"
+      url: "https://gh.xmly.dev/https://github.com/qinshah/flutter_chat_packages.git"
     source: git
     version: "0.3.2"
   checked_yaml:
@@ -563,9 +563,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "161cd202c20bf0ba2394e3a86381d58864dc9e4e"
-      resolved-ref: "161cd202c20bf0ba2394e3a86381d58864dc9e4e"
-      url: "https://github.com/bggRGjQaUbCoE/extended_nested_scroll_view.git"
+      ref: mod
+      resolved-ref: "7cd9461210185bd9e67368b8081195384dc8b919"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/extended_nested_scroll_view.git"
     source: git
     version: "6.2.1"
   fake_async:
@@ -663,7 +663,7 @@ packages:
       path: "."
       ref: "3eefccb759c4ea8114e722f1511fe1dbce70dc9f"
       resolved-ref: "3eefccb759c4ea8114e722f1511fe1dbce70dc9f"
-      url: "https://github.com/qinshah/floating.git"
+      url: "https://gh.xmly.dev/https://github.com/qinshah/floating.git"
     source: git
     version: "3.0.0"
   flutter:
@@ -699,8 +699,8 @@ packages:
     dependency: "direct main"
     description:
       path: flutter_inappwebview
-      ref: "br_v6.1.5_ohos_dev"
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: "br_v6.1.5_ohos"
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "6.1.5"
@@ -708,8 +708,8 @@ packages:
     dependency: transitive
     description:
       path: flutter_inappwebview_android
-      ref: cafd2a41316be804b133ec48b68ddc75ca718a37
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "1.1.3"
@@ -726,8 +726,8 @@ packages:
     dependency: transitive
     description:
       path: flutter_inappwebview_ios
-      ref: cafd2a41316be804b133ec48b68ddc75ca718a37
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "1.1.2"
@@ -735,8 +735,8 @@ packages:
     dependency: transitive
     description:
       path: flutter_inappwebview_macos
-      ref: cafd2a41316be804b133ec48b68ddc75ca718a37
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "1.1.2"
@@ -744,8 +744,8 @@ packages:
     dependency: transitive
     description:
       path: flutter_inappwebview_ohos
-      ref: cafd2a41316be804b133ec48b68ddc75ca718a37
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "1.1.3"
@@ -762,8 +762,8 @@ packages:
     dependency: transitive
     description:
       path: flutter_inappwebview_web
-      ref: cafd2a41316be804b133ec48b68ddc75ca718a37
-      resolved-ref: cafd2a41316be804b133ec48b68ddc75ca718a37
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      resolved-ref: aaebf895abbf824ef295c446f7210e17bebcea02
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
     source: git
     version: "1.1.2"
@@ -826,7 +826,7 @@ packages:
       path: "."
       ref: main
       resolved-ref: "9a8cd4c5a01699be4155d4e328db6e32e84f63de"
-      url: "https://github.com/bggRGjQaUbCoE/flutter_smart_dialog.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/flutter_smart_dialog.git"
     source: git
     version: "5.1.1"
   flutter_sortable_wrap:
@@ -835,7 +835,7 @@ packages:
       path: "."
       ref: master
       resolved-ref: ed2d47c7a8cc0d218bc322ab770fd19c0b56a863
-      url: "https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git"
     source: git
     version: "1.0.6"
   flutter_svg:
@@ -894,7 +894,7 @@ packages:
       path: "."
       ref: "81b8a71982f89b46fa868b315cd71ff6a6ddf895"
       resolved-ref: "81b8a71982f89b46fa868b315cd71ff6a6ddf895"
-      url: "https://github.com/bggRGjQaUbCoE/getx.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/getx.git"
     source: git
     version: "4.7.2"
   glob:
@@ -930,7 +930,7 @@ packages:
     source: hosted
     version: "2.2.0"
   hive:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: hive
       sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
@@ -938,7 +938,7 @@ packages:
     source: hosted
     version: "2.2.3"
   hive_ce:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: hive_ce
       sha256: "8e9980e68643afb1e765d3af32b47996552a64e190d03faf622cea07c1294418"
@@ -1242,10 +1242,10 @@ packages:
     dependency: transitive
     description:
       name: mailer
-      sha256: "7b8691b080809ea1b2fa2f1b0d49c7c089fb328bd23e68aa5818b9cf5f4b420d"
+      sha256: "9f7213f57272c2a047f13ae89e68652d492f929d84ded9a618424b38da328f97"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.1.0"
+    version: "7.2.0"
   matcher:
     dependency: transitive
     description:
@@ -1268,24 +1268,16 @@ packages:
       path: "."
       ref: const
       resolved-ref: "2bb68d1de3c7bb8c6117fce54d43da65a2387163"
-      url: "https://github.com/bggRGjQaUbCoE/material_design_icons_flutter.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/material_design_icons_flutter.git"
     source: git
     version: "7.0.7447"
-  material_new_shapes:
-    dependency: "direct main"
-    description:
-      name: material_new_shapes
-      sha256: e4bc375205e187e8fb232573387112dd8c0dd45b03af8aa2b3c79eb4b9e3e0dc
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   media_kit:
     dependency: "direct main"
     description:
       path: media_kit
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.1.11"
   media_kit_libs_android_video:
@@ -1294,7 +1286,7 @@ packages:
       path: "libs/android/media_kit_libs_android_video"
       ref: "version_1.2.5"
       resolved-ref: deac6b62569584b6a5e28e6c60c187a0a7281b3a
-      url: "https://github.com/My-Responsitories/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git"
     source: git
     version: "1.3.7"
   media_kit_libs_ios_video:
@@ -1303,7 +1295,7 @@ packages:
       path: "libs/ios/media_kit_libs_ios_video"
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.1.4"
   media_kit_libs_linux:
@@ -1312,7 +1304,7 @@ packages:
       path: "libs/linux/media_kit_libs_linux"
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.1.3"
   media_kit_libs_macos_video:
@@ -1321,7 +1313,7 @@ packages:
       path: "libs/macos/media_kit_libs_macos_video"
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.1.4"
   media_kit_libs_ohos:
@@ -1330,7 +1322,7 @@ packages:
       path: "libs/ohos/media_kit_libs_ohos"
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.0.0"
   media_kit_libs_video:
@@ -1339,7 +1331,7 @@ packages:
       path: "libs/universal/media_kit_libs_video"
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.0.5"
   media_kit_libs_windows_video:
@@ -1348,7 +1340,7 @@ packages:
       path: "libs/windows/media_kit_libs_windows_video"
       ref: "version_1.2.5"
       resolved-ref: deac6b62569584b6a5e28e6c60c187a0a7281b3a
-      url: "https://github.com/My-Responsitories/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git"
     source: git
     version: "1.0.10"
   media_kit_native_event_loop:
@@ -1357,7 +1349,7 @@ packages:
       path: media_kit_native_event_loop
       ref: "version_1.2.5"
       resolved-ref: deac6b62569584b6a5e28e6c60c187a0a7281b3a
-      url: "https://github.com/My-Responsitories/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git"
     source: git
     version: "1.0.9"
   media_kit_video:
@@ -1366,7 +1358,7 @@ packages:
       path: media_kit_video
       ref: HEAD
       resolved-ref: df5a969e617a1ce038d5cca46bedcfa1970a7dc6
-      url: "https://github.com/Predidit/media-kit.git"
+      url: "https://gh.xmly.dev/https://github.com/Predidit/media-kit.git"
     source: git
     version: "1.2.5"
   menu_base:
@@ -1648,10 +1640,10 @@ packages:
     dependency: transitive
     description:
       name: punycoder
-      sha256: aed79c05986a18782caa9bad649a4a786e840e1baaf6a2e1aa3a25d143d28e6e
+      sha256: "982734df864d9588eb13e28ac1c5a46b57e22117b3696032ac58739966cec190"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.2"
+    version: "0.3.0"
   qr:
     dependency: transitive
     description:
@@ -1993,7 +1985,7 @@ packages:
       path: "."
       ref: mod
       resolved-ref: "71f34fa179e2d05818004e22e632dd59f2a223be"
-      url: "https://github.com/bggRGjQaUbCoE/super_sliver_list.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/super_sliver_list.git"
     source: git
     version: "0.4.1"
   synchronized:
@@ -2334,7 +2326,7 @@ packages:
       path: "."
       ref: main
       resolved-ref: "2f669c98fb81cff1c64fee93466a1475c77e4273"
-      url: "https://github.com/wgh136/webdav_client.git"
+      url: "https://gh.xmly.dev/https://github.com/wgh136/webdav_client.git"
     source: git
     version: "1.2.2"
   win32:
@@ -2359,7 +2351,7 @@ packages:
       path: "packages/window_manager"
       ref: main
       resolved-ref: ac535d09a5850279e6591a9bdd285f9a3edeebf8
-      url: "https://github.com/bggRGjQaUbCoE/window_manager.git"
+      url: "https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/window_manager.git"
     source: git
     version: "0.5.2"
   xdg_directories:
