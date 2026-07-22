@@ -784,19 +784,18 @@ abstract final class DynamicsHttp {
     required Object tribeId,
     Object? categoryId,
     int? sortType,
-    required int page,
+    int page = 1,
+    int pageSize = 20,
   }) async {
     final res = await Request().get(
       Api.bubble,
       queryParameters: {
-        'tribee_id': tribeId,
-        'category_id': ?categoryId,
-        'sort_type': ?sortType,
-        'page_size': 20,
-        'page_num': page,
-        'web_location': 333.40165,
-        'x-bili-device-req-json':
-            '{"platform":"web","device":"pc","spmid":"333.40165"}',
+        'tribe_id': tribeId,
+        if (categoryId != null) 'category_id': categoryId,
+        if (sortType != null) 'sort_type': sortType,
+        'page': page,
+        'page_size': pageSize,
+        'web_location': 333.1365,
       },
     );
     if (res.data['code'] == 0) {
@@ -807,15 +806,19 @@ abstract final class DynamicsHttp {
   }
 
   static Future<LoadingState<DynReactionData>> dynReaction({
-    required Object id,
-    String? offset,
+    required String dynamicId,
+    required int rid,
+    int page = 1,
+    int pageSize = 20,
   }) async {
     final res = await Request().get(
       Api.dynReaction,
       queryParameters: {
-        'id': id,
-        'offset': ?offset,
-        'web_location': 333.1369,
+        'dynamic_id': dynamicId,
+        'rid': rid,
+        'page': page,
+        'page_size': pageSize,
+        'web_location': 333.1365,
       },
     );
     if (res.data['code'] == 0) {
