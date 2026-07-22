@@ -25,10 +25,12 @@ class Pendant {
 class BaseOfficialVerify {
   int? type;
   String? desc;
+  String? icon;
 
   BaseOfficialVerify.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     desc = json['desc'];
+    icon = json['icon'];
   }
 }
 
