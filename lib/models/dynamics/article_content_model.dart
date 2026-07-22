@@ -132,10 +132,17 @@ class Word {
     style = json['style'] == null ? null : Style.fromJson(json['style']);
     if (json['color'] case final String rawColor
         when rawColor.startsWith('#')) {
-      color = ColourUtils.parse2Int(json['color']);
+      color = ColourUtils.parse2Int(rawColor);
     }
     fontLevel = json['font_level'];
   }
+
+  // font_level 映射处理：
+  //   "small"   → 13px
+  //   "regular" → 16px（与旧版 HTML 专栏基准一致）
+  //   其余/null → 同 regular
+  double get effectiveFontSize =>
+      fontSize ?? (fontLevel == 'small' ? 13.0 : 16.0);
 }
 
 class Style {
