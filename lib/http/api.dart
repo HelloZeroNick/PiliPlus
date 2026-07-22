@@ -997,4 +997,20 @@ abstract final class Api {
 
   static const String liveMedalWall =
       '${HttpString.liveBaseUrl}/xlive/web-ucenter/user/MedalWall';
+
+  static const String topicFold = '/x/topic/web/details/fold';
+
+  static const String spaceReserve = '/x/space/reserve';
+
+  static const String spaceReserveCancel = '/x/space/reserve/cancel';
+
+  static const String memberGuard = '/x/relation/member/guard/top_list';
+
+  static const String bubble = '/x/tribee/v1/dyn/all';
+
+  static const String sortFollowTag = '/x/relation/tags/update_sort';
+
+  static const String replyReport = '/x/v2/reply/report';
+
+  static const String dynReaction = '/x/polymer/web-dynamic/v1/detail/reaction';
 }
