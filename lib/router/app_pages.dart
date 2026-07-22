@@ -31,9 +31,8 @@ import 'package:PiliPlus/pages/live_dm_block/view.dart';
 import 'package:PiliPlus/pages/live_room/view.dart';
 import 'package:PiliPlus/pages/login/view.dart';
 import 'package:PiliPlus/pages/main/view.dart';
-// TODO: HarmonyOS - merge HTTP service first
-// import 'package:PiliPlus/pages/member_guard/view.dart';
-// import 'package:PiliPlus/pages/bubble/view.dart';
+import 'package:PiliPlus/pages/member_guard/view.dart';
+import 'package:PiliPlus/pages/bubble/view.dart';
 import 'package:PiliPlus/pages/main_reply/view.dart';
 import 'package:PiliPlus/pages/match_info/view.dart';
 import 'package:PiliPlus/pages/member/view.dart';
@@ -202,8 +201,7 @@ class Routes {
     GetPage(name: '/myReply', page: () => const MyReply()),
     GetPage(name: '/videoWeb', page: () => const MemberVideoWeb()),
     GetPage(name: '/ssWeb', page: () => const MemberSSWeb()),
-    // TODO: HarmonyOS - merge HTTP service first
-    // GetPage(name: '/memberGuard', page: () => const MemberGuardPage()),
-    // GetPage(name: '/bubble', page: () => const BubblePage()),
+    GetPage(name: '/memberGuard', page: () => const MemberGuard()),
+    GetPage(name: '/bubble', page: () => const BubblePage()),
   ];
 }

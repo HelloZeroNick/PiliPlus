@@ -15,7 +15,9 @@ import 'package:PiliPlus/models/dynamics/vote_model.dart';
 import 'package:PiliPlus/models_new/article/article_info/data.dart';
 import 'package:PiliPlus/models_new/article/article_list/data.dart';
 import 'package:PiliPlus/models_new/article/article_view/data.dart';
+import 'package:PiliPlus/models_new/bubble/data.dart';
 import 'package:PiliPlus/models_new/dynamic/dyn_mention/data.dart';
+import 'package:PiliPlus/models_new/dynamic/dyn_reaction/data.dart';
 import 'package:PiliPlus/models_new/dynamic/dyn_mention/group.dart';
 import 'package:PiliPlus/models_new/dynamic/dyn_reserve/data.dart';
 import 'package:PiliPlus/models_new/dynamic/dyn_reserve_info/data.dart';
@@ -773,6 +775,51 @@ abstract final class DynamicsHttp {
     );
     if (res.data['code'] == 0) {
       return const Success(null);
+    } else {
+      return Error(res.data['message']);
+    }
+  }
+
+  static Future<LoadingState<BubbleData>> bubble({
+    required Object tribeId,
+    Object? categoryId,
+    int? sortType,
+    required int page,
+  }) async {
+    final res = await Request().get(
+      Api.bubble,
+      queryParameters: {
+        'tribee_id': tribeId,
+        'category_id': ?categoryId,
+        'sort_type': ?sortType,
+        'page_size': 20,
+        'page_num': page,
+        'web_location': 333.40165,
+        'x-bili-device-req-json':
+            '{"platform":"web","device":"pc","spmid":"333.40165"}',
+      },
+    );
+    if (res.data['code'] == 0) {
+      return Success(BubbleData.fromJson(res.data['data']));
+    } else {
+      return Error(res.data['message']);
+    }
+  }
+
+  static Future<LoadingState<DynReactionData>> dynReaction({
+    required Object id,
+    String? offset,
+  }) async {
+    final res = await Request().get(
+      Api.dynReaction,
+      queryParameters: {
+        'id': id,
+        'offset': ?offset,
+        'web_location': 333.1369,
+      },
+    );
+    if (res.data['code'] == 0) {
+      return Success(DynReactionData.fromJson(res.data['data']));
     } else {
       return Error(res.data['message']);
     }
