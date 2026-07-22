@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:PiliPlus/common/widgets/dialog/report.dart';
@@ -16,7 +16,10 @@ import 'package:PiliPlus/models_new/live/live_dm_info/data.dart';
 import 'package:PiliPlus/models_new/live/live_medal_wall/uinfo_medal.dart';
 import 'package:PiliPlus/models_new/live/live_room_info_h5/data.dart';
 import 'package:PiliPlus/models_new/live/live_room_play_info/codec.dart';
+import 'package:PiliPlus/models_new/live/live_room_play_info/stream.dart';
 import 'package:PiliPlus/models_new/live/live_superchat/item.dart';
+import 'package:PiliPlus/utils/connectivity_utils.dart';
+import 'package:PiliPlus/utils/theme_utils.dart';
 import 'package:PiliPlus/pages/common/publish/publish_route.dart';
 import 'package:PiliPlus/pages/danmaku/danmaku_model.dart';
 import 'package:PiliPlus/pages/live_room/contribution_rank/view.dart';
@@ -249,28 +252,54 @@ class LiveRoomController extends GetxController {
       liveTime.value = response.liveTime;
       startLiveTimer();
       isPortrait.value = response.isPortrait ?? false;
-      List<CodecItem> codec =
-          response.playurlInfo!.playurl!.stream!.first.format!.first.codec!;
-      CodecItem item = codec.first;
-      // 以服务端返回的码率为准
-      currentQn = item.currentQn!;
-      acceptQnList = item.acceptQn!.map((e) {
-        return (
-          code: e,
-          desc: LiveQuality.fromCode(e)?.desc ?? e.toString(),
-        );
-      }).toList();
-      currentQnDesc.value =
-          LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
-      videoUrl = VideoUtils.getLiveCdnUrl(item);
-      await playerInit(
-        autoplay: autoplay,
-        autoFullScreenFlag: autoFullScreenFlag,
+      stream = response.playurlInfo!.playurl!.stream;
+      await initLiveUrl(
+        streamIndex: streamIndex,
+        formatIndex: formatIndex,
+        codecIndex: codecIndex,
+        liveUrlIndex: liveUrlIndex,
       );
       isLoaded.value = true;
     } else {
       _showDialog(res.toString());
     }
+  }
+
+  late List<Stream> stream;
+  int streamIndex = 0;
+  int formatIndex = 0;
+  int codecIndex = 0;
+  int liveUrlIndex = 0;
+
+  Future<void>? initLiveUrl({
+    int streamIndex = 0,
+    int formatIndex = 0,
+    int codecIndex = 0,
+    int liveUrlIndex = 0,
+  }) {
+    this.streamIndex = streamIndex;
+    this.formatIndex = formatIndex;
+    this.codecIndex = codecIndex;
+    this.liveUrlIndex = liveUrlIndex;
+
+    final CodecItem item = stream
+        .getOrFirst(streamIndex)
+        .format
+        .getOrFirst(formatIndex)
+        .codec
+        .getOrFirst(codecIndex);
+    // 以服务端返回的码率为准
+    currentQn = item.currentQn;
+    acceptQnList = item.acceptQn.map((e) {
+      return (
+        code: e,
+        desc: LiveQuality.fromCode(e)?.desc ?? e.toString(),
+      );
+    }).toList();
+    currentQnDesc.value =
+        LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
+    videoUrl = VideoUtils.getLiveCdnUrl(item, index: liveUrlIndex);
+    return playerInit();
   }
 
   Future<void> queryLiveInfoH5() async {

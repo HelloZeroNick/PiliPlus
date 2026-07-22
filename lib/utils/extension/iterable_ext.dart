@@ -66,4 +66,21 @@ extension ListExt<T> on List<T> {
     }
     return min;
   }
+
+  T? getOrNull(int index) {
+    if (index < 0 || index >= length) return null;
+    return this[index];
+  }
+
+  T getOrFirst(int index) {
+    return getOrNull(index) ?? first;
+  }
+
+  void insertOrAdd(int index, T element) {
+    if (length <= index) {
+      add(element);
+    } else {
+      insert(index, element);
+    }
+  }
 }
