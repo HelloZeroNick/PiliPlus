@@ -119,6 +119,13 @@ List<SettingsModel> get styleSettings => [
     defaultVal: true,
     needReboot: true,
   ),
+  const SwitchModel(
+    title: '悬浮底栏',
+    leading: Icon(MdiIcons.soundbar),
+    setKey: SettingBoxKey.floatingNavBar,
+    defaultVal: false,
+    needReboot: true,
+  ),
   NormalModel(
     leading: const Icon(Icons.calendar_view_week_outlined),
     title: '列表宽度（dp）限制',
@@ -378,7 +385,7 @@ void _showQualityDialog({
     context: context,
     builder: (context) => SliderDialog(
       value: initValue.toDouble(),
-      title: title,
+      title: Text(title),
       min: 10,
       max: 100,
       divisions: 9,
@@ -626,7 +633,7 @@ Future<void> _showFontWeightDialog(BuildContext context) async {
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: 'App字体字重',
+      title: const Text('App字体字重'),
       value: Pref.appFontWeight.toDouble() + 1,
       min: 1,
       max: FontWeight.values.length.toDouble(),
@@ -842,7 +849,7 @@ Future<void> _showToastDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: 'Toast不透明度',
+      title: const Text('Toast不透明度'),
       value: CustomToast.toastOpacity,
       min: 0.0,
       max: 1.0,

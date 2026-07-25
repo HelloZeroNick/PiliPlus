@@ -12,6 +12,7 @@ import 'package:PiliPlus/plugin/pl_player/models/audio_output_type.dart';
 import 'package:PiliPlus/plugin/pl_player/models/hwdec_type.dart';
 import 'package:PiliPlus/utils/storage.dart';
 import 'package:PiliPlus/utils/storage_key.dart';
+import 'package:PiliPlus/utils/filtering_text.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/video_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -126,16 +127,11 @@ List<SettingsModel> get videoSettings => [
   NormalModel(
     title: '首选解码格式',
     leading: const Icon(Icons.movie_creation_outlined),
-    getSubtitle: () =>
-        '首选解码格式：${VideoDecodeFormatType.fromCode(Pref.defaultDecode).description}，请根据设备支持情况与需求调整',
-    onTap: _showDecodeDialog,
-  ),
-  NormalModel(
-    title: '次选解码格式',
-    getSubtitle: () =>
-        '非杜比视频次选：${VideoDecodeFormatType.fromCode(Pref.secondDecode).description}，仍无则选择首个提供的解码格式',
-    leading: const Icon(Icons.swap_horizontal_circle_outlined),
-    onTap: _showSecondDecodeDialog,
+    getSubtitle: () {
+      final list = Pref.preferCodecs;
+      return '首选解码格式：${(list.isEmpty ? '第一个可用' : list.map((i) => i.name).join(","))}，请根据设备支持情况与需求调整';
+    },
+    onTap: _showCodecsDialog,
   ),
   if (kDebugMode || Platform.isAndroid)
     NormalModel(
@@ -144,12 +140,17 @@ List<SettingsModel> get videoSettings => [
       getSubtitle: () => '当前：${Pref.audioOutput}',
       onTap: _showAudioOutputDialog,
     ),
-  const SwitchModel(
-    title: '扩大缓冲区',
-    leading: Icon(Icons.storage_outlined),
-    subtitle: '默认缓冲区为视频4MB/直播16MB，开启后为32MB/64MB，加载时间变长',
-    setKey: SettingBoxKey.expandBuffer,
-    defaultVal: false,
+  NormalModel(
+    title: '缓冲大小',
+    leading: const Icon(Icons.storage_outlined),
+    getSubtitle: () => '当前：${Pref.bufferSize.toStringAsFixed(1)} MB（默认 4.0 MB）',
+    onTap: _showBufferSizeDialog,
+  ),
+  NormalModel(
+    title: '缓冲时长',
+    leading: const Icon(Icons.timer_outlined),
+    getSubtitle: () => '当前：${Pref.bufferSec.toStringAsFixed(1)} 秒（默认 16.0 秒）',
+    onTap: _showBufferSecDialog,
   ),
   NormalModel(
     title: '自动同步',
@@ -341,42 +342,26 @@ Future<void> _showLiveCellularQaDialog(
   }
 }
 
-Future<void> _showDecodeDialog(
+Future<void> _showCodecsDialog(
   BuildContext context,
   VoidCallback setState,
 ) async {
-  final res = await showDialog<String>(
+  final res = await showDialog<List<String>>(
     context: context,
-    builder: (context) => SelectDialog<String>(
-      title: '默认解码格式',
-      value: Pref.defaultDecode,
-      values: VideoDecodeFormatType.values
-          .map((e) => (e.codes.first, e.description))
-          .toList(),
+    builder: (context) => OrderedMultiSelectDialog<String>(
+      title: '首选解码格式（按优先顺序选择）',
+      initValues: Pref.preferCodecs.map((e) => e.codes.first).toList(),
+      values: {
+        for (final e in VideoDecodeFormatType.values)
+          e.codes.first: e.description,
+      },
     ),
   );
-  if (res != null) {
-    await GStorage.setting.put(SettingBoxKey.defaultDecode, res);
-    setState();
-  }
-}
-
-Future<void> _showSecondDecodeDialog(
-  BuildContext context,
-  VoidCallback setState,
-) async {
-  final res = await showDialog<String>(
-    context: context,
-    builder: (context) => SelectDialog<String>(
-      title: '次选解码格式',
-      value: Pref.secondDecode,
-      values: VideoDecodeFormatType.values
-          .map((e) => (e.codes.first, e.description))
-          .toList(),
-    ),
-  );
-  if (res != null) {
-    await GStorage.setting.put(SettingBoxKey.secondDecode, res);
+  if (res != null && res.isNotEmpty) {
+    await GStorage.setting.put(
+      SettingBoxKey.preferCodecs,
+      res,
+    );
     setState();
   }
 }
@@ -453,6 +438,86 @@ Future<void> _showHwDecDialog(
     );
     setState();
   }
+}
+
+Future<void> _showDecimalDialog(
+  BuildContext context,
+  String title,
+  String unit,
+  double current,
+  String storageKey, {
+  required VoidCallback setState,
+  double min = 0.0,
+  double max = 999.0,
+}) async {
+  String value = current.toStringAsFixed(1);
+  final result = await showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: TextFormField(
+        autofocus: true,
+        initialValue: value,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        onChanged: (v) => value = v,
+        inputFormatters: FilteringText.decimal,
+      ),
+      actions: [
+        TextButton(
+          onPressed: Get.back,
+          child: Text(
+            '取消',
+            style: TextStyle(color: ColorScheme.of(context).outline),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            try {
+              final parsed = double.parse(value);
+              if (parsed < min || parsed > max) {
+                SmartDialog.showToast('请输入 $min ~ $max 之间的值');
+                return;
+              }
+              Get.back(result: parsed.toStringAsFixed(1));
+            } catch (e) {
+              SmartDialog.showToast('请输入有效数字');
+            }
+          },
+          child: const Text('确定'),
+        ),
+      ],
+    ),
+  );
+  if (result != null) {
+    await GStorage.setting.put(storageKey, double.parse(result));
+    setState();
+  }
+}
+
+void _showBufferSizeDialog(BuildContext context, VoidCallback setState) {
+  _showDecimalDialog(
+    context,
+    '缓冲大小 (MB)',
+    'MB',
+    Pref.bufferSize,
+    SettingBoxKey.bufferSize,
+    setState: setState,
+    min: 0.5,
+    max: 256.0,
+  );
+}
+
+void _showBufferSecDialog(BuildContext context, VoidCallback setState) {
+  _showDecimalDialog(
+    context,
+    '缓冲时长 (秒)',
+    '秒',
+    Pref.bufferSec,
+    SettingBoxKey.bufferSec,
+    setState: setState,
+    min: 1.0,
+    max: 300.0,
+  );
 }
 
 void _showAutoSyncDialog(BuildContext context, VoidCallback setState) {

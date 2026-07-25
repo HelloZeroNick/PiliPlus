@@ -2,8 +2,8 @@ import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/http/video.dart';
 import 'package:PiliPlus/models/common/account_type.dart';
 import 'package:PiliPlus/models/common/video/audio_quality.dart';
-import 'package:PiliPlus/models/common/video/video_decode_type.dart';
 import 'package:PiliPlus/models/common/video/video_quality.dart';
+import 'package:PiliPlus/pages/video/controller.dart';
 import 'package:PiliPlus/models/common/video/video_type.dart';
 import 'package:PiliPlus/models/video/play/url.dart';
 import 'package:PiliPlus/models_new/download/bili_download_entry_info.dart';
@@ -76,31 +76,10 @@ abstract final class DownloadHttp {
               targetSupportFormats.newDesc ??
               VideoQuality.fromCode(targetVideoQa).desc;
 
-        String preferDecode = Pref.defaultDecode; // def avc
-        String preferSecondDecode = Pref.secondDecode; // def av1
-
-        // 默认从设置中取AV1
-        VideoDecodeFormatType currentDecodeFormats =
-            VideoDecodeFormatType.fromString(preferDecode);
-        VideoDecodeFormatType secondDecodeFormats =
-            VideoDecodeFormatType.fromString(preferSecondDecode);
-        // 当前视频没有对应格式返回第一个
-        int flag = 0;
-        for (final e in supportDecodeFormats) {
-          if (currentDecodeFormats.codes.any(e.startsWith)) {
-            flag = 1;
-            break;
-          } else if (secondDecodeFormats.codes.any(e.startsWith)) {
-            flag = 2;
-          }
-        }
-        if (flag == 2) {
-          currentDecodeFormats = secondDecodeFormats;
-        } else if (flag == 0) {
-          currentDecodeFormats = VideoDecodeFormatType.fromString(
-            supportDecodeFormats.first,
-          );
-        }
+        final currentDecodeFormats = VideoDetailController.selectCodec(
+          supportDecodeFormats,
+          Pref.preferCodecs,
+        );
 
         /// 取出符合当前解码格式的videoItem
         final videoDash = videosList.firstWhere(

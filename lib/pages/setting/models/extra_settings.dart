@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'dart:math' show pi, max;
 
 import 'package:PiliPlus/common/widgets/custom_icon.dart';
@@ -41,7 +41,7 @@ import 'package:PiliPlus/utils/storage_key.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/update.dart';
 import 'package:PiliPlus/utils/utils.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker_ohos/file_picker_ohos.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide RefreshIndicator;
 import 'package:flutter/services.dart';
@@ -969,7 +969,7 @@ Future<void> _showRefreshDragDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: '刷新滑动距离',
+      title: const Text('刷新滑动距离'),
       min: 0.1,
       max: 0.5,
       divisions: 8,
@@ -992,7 +992,7 @@ Future<void> _showRefreshDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: '刷新指示器高度',
+      title: const Text('刷新指示器高度'),
       min: 10.0,
       max: 100.0,
       divisions: 9,
@@ -1092,7 +1092,7 @@ Future<void> _showReplyCountDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: '连接重试次数',
+      title: const Text('连接重试次数'),
       min: 0,
       max: 8,
       divisions: 8,
@@ -1114,7 +1114,7 @@ Future<void> _showReplyDelayDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: '连接重试间隔',
+      title: const Text('连接重试间隔'),
       min: 0,
       max: 1000,
       divisions: 10,

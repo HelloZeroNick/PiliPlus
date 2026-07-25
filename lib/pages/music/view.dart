@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:PiliPlus/common/widgets/badge.dart';
@@ -486,13 +486,15 @@ class _MusicDetailPageState extends CommonDynPageState<MusicDetailPage> {
                         Wrap(
                           spacing: 16,
                           children: [
-                            if (!item.musicRank.isNullOrEmpty)
-                              PBadge(
-                                text: item.musicRank,
-                                type: PBadgeType.secondary,
-                                isStack: false,
-                                fontSize: 11,
-                              ),
+                            if (item.achievement.isNotEmpty)
+                              for (var i in item.achievement)
+                                if (i.isNotEmpty)
+                                  PBadge(
+                                    text: i,
+                                    type: PBadgeType.secondary,
+                                    isStack: false,
+                                    fontSize: 11,
+                                  ),
                             if (item.mvCid != null && item.mvCid != 0)
                               GestureDetector(
                                 onTap: () => PageUtils.toVideoPage(

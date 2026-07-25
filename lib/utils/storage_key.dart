@@ -12,13 +12,13 @@ abstract final class SettingBoxKey {
       defaultAudioQaCellular = 'defaultAudioQaCellular',
       autoPlayEnable = 'autoPlayEnable',
       fullScreenMode = 'fullScreenMode',
-      defaultDecode = 'defaultDecode',
-      secondDecode = 'secondDecode',
+      preferCodecs = 'preferCodecs',
       defaultToastOp = 'defaultToastOp',
       defaultPicQa = 'defaultPicQa',
       enableHA = 'enableHA',
       audioOutput = 'audioOutput',
-      expandBuffer = 'expandBuffer',
+      bufferSize = 'bufferSize',
+      bufferSec = 'bufferSec',
       hardwareDecoding = 'hardwareDecoding',
       videoSync = 'videoSync',
       autosync = 'autosync',
@@ -33,7 +33,9 @@ abstract final class SettingBoxKey {
       audioPlayMode = 'audioPlayMode',
       showBatteryLevel = 'showBatteryLevel';
 
-  static const String enableVerticalExpand = 'enableVerticalExpand',
+  static const String playerVolume = 'playerVolume',
+      maxVolume = 'maxVolume',
+      enableVerticalExpand = 'enableVerticalExpand',
       feedBackEnable = 'feedBackEnable',
       enableLongShowControl = 'enableLongShowControl',
       allowRotateScreen = 'allowRotateScreen',
@@ -162,7 +164,9 @@ abstract final class SettingBoxKey {
       showWindowTitleBar = 'showWindowTitleBar',
       desktopVolume = 'desktopVolume',
       showTrayIcon = 'showTrayIcon',
-      uiScale = 'uiScale';
+      uiScale = 'uiScale',
+      removeSafeArea = 'removeSafeArea',
+      fullScreenSCWidth = 'fullScreenSCWidth';
 
   static const String subtitlePreferenceV2 = 'subtitlePreferenceV2',
       enableDragSubtitle = 'enableDragSubtitle',
@@ -234,6 +238,8 @@ abstract final class SettingBoxKey {
       tempPlayerConf = 'tempPlayerConf',
       reduceLuxColor = 'reduceLuxColor',
       liveCdnUrl = 'liveCdnUrl',
+      liveStream = 'liveStream',
+      floatingNavBar = 'floatingNavBar',
       saveReply = 'saveReply';
 }
 

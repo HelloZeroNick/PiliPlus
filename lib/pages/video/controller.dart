@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' show min;
 import 'dart:ui';
 
@@ -8,6 +7,9 @@ import 'package:PiliPlus/common/widgets/pair.dart';
 import 'package:PiliPlus/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:PiliPlus/grpc/bilibili/app/listener/v1.pbenum.dart'
     show PlaylistSource;
+import 'package:PiliPlus/grpc/bilibili/community/service/dm/v1.pbenum.dart'
+    show SubtitleType;
+import 'package:PiliPlus/grpc/dm.dart';
 import 'package:PiliPlus/http/fav.dart';
 import 'package:PiliPlus/http/init.dart';
 import 'package:PiliPlus/http/loading_state.dart';
@@ -54,12 +56,10 @@ import 'package:PiliPlus/plugin/pl_player/models/play_status.dart';
 import 'package:PiliPlus/services/download/download_service.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/extension/context_ext.dart';
-import 'package:PiliPlus/utils/extension/file_ext.dart';
 import 'package:PiliPlus/utils/extension/iterable_ext.dart';
 import 'package:PiliPlus/utils/extension/num_ext.dart';
 import 'package:PiliPlus/utils/extension/size_ext.dart';
 import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
 import 'package:PiliPlus/utils/platform_utils.dart';
 import 'package:PiliPlus/utils/storage.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
@@ -73,7 +73,6 @@ import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:media_kit/media_kit.dart' hide Subtitle;
-import 'package:path/path.dart' as path;
 
 class VideoDetailController extends GetxController
     with GetTickerProviderStateMixin, BlockMixin {
@@ -113,7 +112,7 @@ class VideoDetailController extends GetxController
   /// 播放器配置 画质 音质 解码格式
   final Rxn<VideoQuality> currentVideoQa = Rxn<VideoQuality>();
   AudioQuality? currentAudioQa;
-  late VideoDecodeFormatType currentDecodeFormats;
+  VideoDecodeFormatType currentDecodeFormats = Pref.preferCodecs.first;
 
   // 是否开始自动播放 存在多p的情况下，第二p需要为true
   final RxBool _autoPlay = Pref.autoPlayEnable.obs;
@@ -143,8 +142,7 @@ class VideoDetailController extends GetxController
   Box setting = GStorage.setting;
 
   // 预设的解码格式
-  late String cacheDecode = Pref.defaultDecode; // def avc
-  late String cacheSecondDecode = Pref.secondDecode; // def av1
+  late List<VideoDecodeFormatType> preferCodecs = Pref.preferCodecs;
 
   bool get showReply => isFileSource
       ? false
@@ -609,31 +607,52 @@ class VideoDetailController extends GetxController
     }
   }
 
-  VideoItem findVideoByQa(int qa) {
-    /// 根据currentVideoQa和currentDecodeFormats 重新设置videoUrl
+  VideoItem findVideoByQa(int qa, {bool setCodecs = false}) {
+    /// 依据currentVideoQa、currentDecodeFormats 来匹配videoUrl
     final videoList = data.dash!.video!.where((i) => i.id == qa).toList();
 
-    final currentDecodeFormats = this.currentDecodeFormats.codes;
-    final defaultDecodeFormats = VideoDecodeFormatType.fromString(
-      cacheDecode,
-    ).codes;
-    final secondDecodeFormats = VideoDecodeFormatType.fromString(
-      cacheSecondDecode,
-    ).codes;
-
-    VideoItem? video;
-    for (final i in videoList) {
-      final codec = i.codecs!;
-      if (currentDecodeFormats.any(codec.startsWith)) {
-        video = i;
-        break;
-      } else if (defaultDecodeFormats.any(codec.startsWith)) {
-        video = i;
-      } else if (video == null && secondDecodeFormats.any(codec.startsWith)) {
-        video = i;
+    final currentCodes = currentDecodeFormats.codes;
+    VideoItem? bestVideo;
+    int bestIndex = preferCodecs.length;
+    for (final video in videoList) {
+      final c = video.codecs!;
+      if (currentCodes.any(c.startsWith)) {
+        return video;
+      }
+      for (int i = 0; i < bestIndex; i++) {
+        if (preferCodecs[i].codes.any(c.startsWith)) {
+          bestIndex = i;
+          bestVideo = video;
+          break;
+        }
       }
     }
-    return video ?? videoList.first;
+
+    if (setCodecs) {
+      if (bestIndex < preferCodecs.length) {
+        currentDecodeFormats = preferCodecs[bestIndex];
+      } else if (bestVideo != null) {
+        currentDecodeFormats = VideoDecodeFormatType.fromString(
+          bestVideo.codecs!,
+        );
+      }
+    }
+    return bestVideo ?? videoList.first;
+  }
+
+  /// 通用的 codec 选择算法，download 和 video controller 共用
+  static VideoDecodeFormatType selectCodec(
+    List<String> codecs,
+    List<VideoDecodeFormatType> preferCodecs,
+  ) {
+    for (final prefer in preferCodecs) {
+      for (final c in codecs) {
+        if (prefer.codes.any(c.startsWith)) {
+          return prefer;
+        }
+      }
+    }
+    return VideoDecodeFormatType.fromString(codecs.first);
   }
 
   /// 更新画质、音质
@@ -880,41 +899,7 @@ class VideoDetailController extends GetxController
           .toList();
 
       /// 优先顺序 设置中指定解码格式 -> 当前可选的首个解码格式
-      final List<FormatItem> supportFormats = data.supportFormats!;
-      // 根据画质选编码格式
-      final List<String> supportDecodeFormats = supportFormats
-          .firstWhere(
-            (e) => e.quality == targetVideoQa,
-            orElse: () => supportFormats.first,
-          )
-          .codecs!;
-      // 默认从设置中取AV1
-      currentDecodeFormats = VideoDecodeFormatType.fromString(cacheDecode);
-      VideoDecodeFormatType secondDecodeFormats =
-          VideoDecodeFormatType.fromString(cacheSecondDecode);
-      // 当前视频没有对应格式返回第一个
-      int flag = 0;
-      for (final e in supportDecodeFormats) {
-        if (currentDecodeFormats.codes.any(e.startsWith)) {
-          flag = 1;
-          break;
-        } else if (secondDecodeFormats.codes.any(e.startsWith)) {
-          flag = 2;
-        }
-      }
-      if (flag == 2) {
-        currentDecodeFormats = secondDecodeFormats;
-      } else if (flag == 0) {
-        currentDecodeFormats = VideoDecodeFormatType.fromString(
-          supportDecodeFormats.first,
-        );
-      }
-
-      /// 取出符合当前解码格式的videoItem
-      firstVideo = videosList.firstWhere(
-        (e) => currentDecodeFormats.codes.any(e.codecs!.startsWith),
-        orElse: () => videosList.first,
-      );
+      firstVideo = findVideoByQa(targetVideoQa, setCodecs: true);
       setVideoHeight();
 
       videoUrl = VideoUtils.getCdnUrl(firstVideo.playUrls);
@@ -1019,21 +1004,8 @@ class VideoDetailController extends GetxController
       final sub = subtitles[index - 1];
 
       String subUri = subtitle.id;
-      File? file;
       if (subtitle.isData) {
-        subUri = path.join(tmpDirPath, '${cid.value}-${sub.lan}.vtt');
-        file = File(subUri);
-        if (!file.existsSync()) {
-          await file.writeAsString(subtitle.id);
-          try {
-            plPlayerController.videoPlayerController!.platform?.release.add(
-              file.tryDel,
-            );
-          } catch (_) {
-            file.tryDel();
-            return;
-          }
-        }
+        subUri = 'memory://$subUri';
       }
       await plPlayerController.videoPlayerController?.setSubtitleTrack(
         SubtitleTrack(subUri, sub.lanDoc, sub.lan, uri: true),
@@ -1148,25 +1120,52 @@ class VideoDetailController extends GetxController
         } catch (_) {}
       }
 
-      if (response.subtitle?.subtitles?.isNotEmpty == true) {
-        subtitles.value = response.subtitle!.subtitles!;
-
-        final idx = switch (Pref.subtitlePreferenceV2) {
-          SubtitlePrefType.off => 0,
-          SubtitlePrefType.on => 1,
-          SubtitlePrefType.withoutAi =>
-            subtitles.first.lan.startsWith('ai') ? 0 : 1,
-          SubtitlePrefType.auto =>
-            !subtitles.first.lan.startsWith('ai') ||
-                    (PlatformUtils.isMobile &&
-                        (await FlutterVolumeController.getVolume() ?? 0.0) <=
-                            0.0)
-                ? 1
-                : 0,
-        };
-        await setSubtitle(idx);
+      if (response.subtitle?.subtitles case final sub? when (sub.isNotEmpty)) {
+        _setSubtitle(sub);
+      } else if (!Accounts.main.isLogin) {
+        final res = await DmGrpc.dmView(aid, cid.value);
+        if (res case Success(:final response)) {
+          if (response.hasSubtitle() &&
+              response.subtitle.subtitles.isNotEmpty) {
+            _setSubtitle(
+              response.subtitle.subtitles
+                  .map(
+                    (i) => Subtitle(
+                      lan: i.lan,
+                      lanDoc: i.lanDoc,
+                      subtitleUrl: i.subtitleUrl.replaceFirst(
+                        RegExp('^https?:'),
+                        '',
+                      ),
+                      isAi: i.type == SubtitleType.AI,
+                    ),
+                  )
+                  .toList()
+                ..sort(),
+            );
+          }
+        } else {
+          res.toast();
+        }
       }
     }
+  }
+
+  Future<void> _setSubtitle(List<Subtitle> sub) async {
+    subtitles.value = sub;
+    final idx = switch (Pref.subtitlePreferenceV2) {
+      SubtitlePrefType.off => 0,
+      SubtitlePrefType.on => 1,
+      SubtitlePrefType.withoutAi =>
+        sub.first.lan.startsWith('ai') ? 0 : 1,
+      SubtitlePrefType.auto =>
+        !sub.first.lan.startsWith('ai') ||
+                (PlatformUtils.isMobile &&
+                    (await FlutterVolumeController.getVolume() ?? 0.0) <= 0.0)
+            ? 1
+            : 0,
+    };
+    await setSubtitle(idx);
   }
 
   void updateMediaListHistory(int aid) {

@@ -235,15 +235,18 @@ abstract final class Pref {
     defaultValue: AudioQuality.k192.code,
   );
 
-  static String get defaultDecode => _setting.get(
-    SettingBoxKey.defaultDecode,
-    defaultValue: VideoDecodeFormatType.HEVC.codes.first,
-  );
-
-  static String get secondDecode => _setting.get(
-    SettingBoxKey.secondDecode,
-    defaultValue: VideoDecodeFormatType.AVC.codes.first,
-  );
+  static List<VideoDecodeFormatType> get preferCodecs {
+    final list = _setting.get(
+      SettingBoxKey.preferCodecs,
+      defaultValue: [
+        VideoDecodeFormatType.HEVC.codes.first,
+        VideoDecodeFormatType.AVC.codes.first,
+      ],
+    );
+    return (list as List)
+        .map((e) => VideoDecodeFormatType.fromString(e as String))
+        .toList();
+  }
 
   static String get hardwareDecoding => _setting.get(
     SettingBoxKey.hardwareDecoding,
@@ -666,6 +669,15 @@ abstract final class Pref {
   static double get uiScale =>
       _setting.get(SettingBoxKey.uiScale, defaultValue: 1.0);
 
+  static bool get removeSafeArea =>
+      _setting.get(SettingBoxKey.removeSafeArea, defaultValue: false);
+
+  static int get fullScreenSCWidth =>
+      _setting.get(SettingBoxKey.fullScreenSCWidth, defaultValue: 300);
+
+  static int get liveStream =>
+      _setting.get(SettingBoxKey.liveStream, defaultValue: 0);
+
   static bool get dynamicsWaterfallFlow =>
       _setting.get(SettingBoxKey.dynamicsWaterfallFlow, defaultValue: true);
 
@@ -690,6 +702,9 @@ abstract final class Pref {
 
   static bool get useSideBar =>
       _setting.get(SettingBoxKey.useSideBar, defaultValue: false);
+
+  static bool get floatingNavBar =>
+      _setting.get(SettingBoxKey.floatingNavBar, defaultValue: false);
 
   static bool get dynamicsShowAllFollowedUp => _setting.get(
     SettingBoxKey.dynamicsShowAllFollowedUp,
@@ -806,8 +821,31 @@ abstract final class Pref {
   static bool get enableLongShowControl =>
       _setting.get(SettingBoxKey.enableLongShowControl, defaultValue: false);
 
-  static bool get expandBuffer =>
-      _setting.get(SettingBoxKey.expandBuffer, defaultValue: false);
+  static double get bufferSize =>
+      _setting.get(SettingBoxKey.bufferSize, defaultValue: 4.0);
+
+  static double get bufferSec =>
+      _setting.get(SettingBoxKey.bufferSec, defaultValue: 16.0);
+
+  static Map<String, String> initBuffer([double playbackSpeed = 1.0]) {
+    final bufSec = Pref.bufferSec * playbackSpeed;
+    final bufSiz = (Pref.bufferSize * 0x100000).toStringAsFixed(0);
+    return {
+      'cache': 'yes',
+      'cache-secs': bufSec.toStringAsFixed(3),
+      'demuxer-hysteresis-secs': (bufSec / 1.5).toStringAsFixed(3),
+      'demuxer-max-bytes': bufSiz,
+      'demuxer-max-back-bytes': bufSiz,
+    };
+  }
+
+  static Map<String, String> initLiveBuffer() {
+    return {
+      'cache': 'yes',
+      'demuxer-max-bytes': (Pref.bufferSize * 0x200000).toStringAsFixed(0),
+      'demuxer-max-back-bytes': '0',
+    };
+  }
 
   static String get audioOutput => _setting.get(
     SettingBoxKey.audioOutput,
@@ -931,6 +969,12 @@ abstract final class Pref {
 
   static double get desktopVolume =>
       _setting.get(SettingBoxKey.desktopVolume, defaultValue: 1.0);
+
+  static double get playerVolume =>
+      _setting.get(SettingBoxKey.playerVolume, defaultValue: 200.0);
+
+  static double get maxVolume =>
+      _setting.get(SettingBoxKey.maxVolume, defaultValue: 2.0);
 
   static SkipType get pgcSkipType =>
       SkipType.values[_setting.get(SettingBoxKey.pgcSkipType) ??

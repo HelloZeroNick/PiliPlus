@@ -8,6 +8,7 @@ import 'package:PiliPlus/pages/live_room/controller.dart';
 import 'package:PiliPlus/pages/live_room/superchat/superchat_card.dart';
 import 'package:PiliPlus/pages/member/widget/medal_widget.dart';
 import 'package:PiliPlus/pages/video/widgets/header_control.dart';
+import 'package:PiliPlus/common/widgets/scroll_physics.dart';
 import 'package:PiliPlus/utils/extension/theme_ext.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -53,7 +54,7 @@ class LiveRoomChatPanel extends StatelessWidget {
             controller: liveRoomController.scrollController,
             separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemCount: liveRoomController.messages.length,
-            physics: const ClampingScrollPhysics(),
+            physics: platformClampingScrollPhysics,
             itemBuilder: (_, index) {
               final item = liveRoomController.messages[index];
               if (item is DanmakuMsg) {
@@ -226,9 +227,7 @@ class LiveRoomChatPanel extends StatelessWidget {
                       size: 20,
                     ),
                     label: const Text('回到底部'),
-                    onPressed: () => liveRoomController
-                      ..disableAutoScroll.value = false
-                      ..jumpToBottom(),
+                    onPressed: liveRoomController.handleJumpToBottom,
                   ),
                 )
               : const SizedBox.shrink(),

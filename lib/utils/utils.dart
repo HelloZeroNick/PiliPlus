@@ -8,7 +8,8 @@ import 'package:PiliPlus/utils/platform_utils.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker_ohos/file_picker_ohos.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -198,6 +199,11 @@ abstract final class Utils {
   /// `@pragma('vm:notify-debugger-on-exception')` to allow an attached debugger
   /// to treat the exception as unhandled.
   static void reportError(Object exception, [StackTrace? stack]) {
-    Catcher2.reportCheckedError(exception, stack);
+    try {
+      Catcher2.reportCheckedError(exception, stack);
+    } catch (e) {
+      debugPrint('[reportError] $exception');
+      if (stack != null) debugPrint('[reportError] Stack:\n$stack');
+    }
   }
 }

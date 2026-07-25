@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -146,6 +146,10 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
 
     PlPlayerController.setPlayCallBack(playCallBack);
     videoDetailController = Get.put(VideoDetailController(), tag: heroTag);
+
+    if (videoDetailController.plPlayerController.removeSafeArea) {
+      hideSystemBar();
+    }
     // 页面顶部是黑色播放器：自由多窗的装饰栏按钮切浅色风格，否则浅色
     // 模式下深色按钮不可见
     HarmonyChannel.holdDecorDark(this);
@@ -402,8 +406,8 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       }
     }
     removeObserverMobile(this);
-    if (PlatformUtils.isMobile) {
-      showStatusBar();
+    if (!videoDetailController.plPlayerController.removeSafeArea) {
+      showSystemBar();
     }
     super.dispose();
   }
@@ -559,9 +563,9 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ..addListener(animListener);
     if (PlatformUtils.isMobile && mounted && isShowing && !isFullScreen) {
       if (isPortrait) {
-        showStatusBar();
+        showSystemBar();
       } else if (!videoDetailController.horizontalScreen) {
-        hideStatusBar();
+        hideSystemBar();
       }
     }
     if (PlatformUtils.isMobile) {

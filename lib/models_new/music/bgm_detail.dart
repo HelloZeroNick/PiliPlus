@@ -26,7 +26,6 @@ class MusicDetail {
     required this.artistsList,
     required this.listenPv,
     required this.achievement,
-    required this.musicRank,
     required this.maxListId,
     required this.showChosen,
     required this.hotSongHeat,
@@ -67,8 +66,7 @@ class MusicDetail {
   final List<Artist>? artists;
   final List<Artist>? artistsList;
   final int? listenPv;
-  final List<String>? achievement;
-  final String? musicRank;
+  final List<String> achievement;
   final int? maxListId;
   final bool? showChosen;
   final HotSongHeat? hotSongHeat;
@@ -114,8 +112,13 @@ class MusicDetail {
           ?.map((x) => Artist.fromJson(x))
           .toList(),
       listenPv: json["listen_pv"],
-      achievement: (json["achievement"] as List?)?.fromCast(),
-      musicRank: json["music_rank"],
+      achievement: [
+        ...(json["achievement"] as List?)?.whereType<String>() ?? [],
+        if (json["music_rank"] is String && json["music_rank"].isNotEmpty)
+          json["music_rank"],
+        if (json["recreation_rank"] is String && json["recreation_rank"].isNotEmpty)
+          json["recreation_rank"],
+      ],
       maxListId: json["max_list_id"],
       showChosen: json["show_chosen"],
       hotSongHeat: json["hot_song_heat"] == null

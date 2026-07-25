@@ -48,6 +48,8 @@ import 'package:window_manager/window_manager.dart' hide calcWindowPosition;
 
 WebViewEnvironment? webViewEnvironment;
 
+EdgeInsets? tmpPadding;
+
 Future<void> _initDownPath() async {
   if (PlatformUtils.isDesktop) {
     final customDownPath = Pref.downloadPath;
@@ -245,6 +247,19 @@ void main() async {
       rootWidget: const MyApp(),
     );
   } else {
+    if (OS.isHarmony) {
+      // 鸿蒙平台基础异常捕获：打印完整堆栈便于调试
+      FlutterError.onError = (details) {
+        FlutterError.presentError(details);
+        debugPrint('[FlutterError] ${details.exceptionAsString()}');
+        debugPrint('[FlutterError] Stack:\n${details.stack}');
+      };
+      PlatformDispatcher.instance.onError = (error, stack) {
+        debugPrint('[PlatformDispatcher] $error');
+        debugPrint('[PlatformDispatcher] Stack:\n$stack');
+        return true;
+      };
+    }
     runApp(const MyApp());
   }
 
@@ -290,21 +305,23 @@ class MyApp extends StatelessWidget {
     final dynamicColor = _light != null && _dark != null && Pref.dynamicColor;
     late final brandColor = colorThemeTypes[Pref.customColor].color;
     late final variant = Pref.schemeVariant;
-    return (
-      ThemeUtils.getThemeData(
-        colorScheme: dynamicColor
-            ? _light!
-            : brandColor.asColorSchemeSeed(variant, Brightness.light),
-        isDynamic: dynamicColor,
-      ),
-      ThemeUtils.getThemeData(
-        isDark: true,
-        colorScheme: dynamicColor
-            ? _dark!
-            : brandColor.asColorSchemeSeed(variant, Brightness.dark),
-        isDynamic: dynamicColor,
-      ),
+    final light = ThemeUtils.getThemeData(
+      colorScheme: dynamicColor
+          ? _light!
+          : brandColor.asColorSchemeSeed(variant, Brightness.light),
+      isDynamic: dynamicColor,
     );
+    final dark = ThemeUtils.getThemeData(
+      isDark: true,
+      colorScheme: dynamicColor
+          ? _dark!
+          : brandColor.asColorSchemeSeed(variant, Brightness.dark),
+      isDynamic: dynamicColor,
+    );
+    ThemeUtils.lightTheme = light;
+    ThemeUtils.darkTheme = dark;
+    ThemeUtils.themeMode = Pref.themeMode;
+    return (light, dark);
   }
 
   @override
@@ -370,9 +387,9 @@ class MyApp extends StatelessWidget {
         data: mediaQuery.copyWith(
           textScaler: textScaler,
           size: mediaQuery.size / uiScale,
-          padding: mediaQuery.padding / uiScale,
+          padding: (tmpPadding ?? mediaQuery.padding) / uiScale,
           viewInsets: mediaQuery.viewInsets / uiScale,
-          viewPadding: mediaQuery.viewPadding / uiScale,
+          viewPadding: (tmpPadding ?? mediaQuery.viewPadding) / uiScale,
           devicePixelRatio: mediaQuery.devicePixelRatio * uiScale,
           gestureSettings: gestureSettings,
         ),
@@ -382,6 +399,8 @@ class MyApp extends StatelessWidget {
       child = MediaQuery(
         data: mediaQuery.copyWith(
           textScaler: textScaler,
+          padding: tmpPadding ?? mediaQuery.padding,
+          viewPadding: tmpPadding ?? mediaQuery.viewPadding,
           gestureSettings: gestureSettings,
         ),
         child: child!,

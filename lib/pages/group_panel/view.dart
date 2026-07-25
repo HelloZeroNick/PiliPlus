@@ -5,6 +5,7 @@ import 'package:PiliPlus/models/member/tags.dart';
 import 'package:PiliPlus/utils/extension/iterable_ext.dart';
 import 'package:PiliPlus/utils/extension/num_ext.dart';
 import 'package:PiliPlus/utils/feed_back.dart';
+import 'package:PiliPlus/utils/request_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -34,10 +35,10 @@ class _GroupPanelState extends State<GroupPanel> {
   @override
   void initState() {
     super.initState();
-    _query();
+    _queryFollowUpTags();
   }
 
-  void _query() {
+  void _queryFollowUpTags() {
     MemberHttp.followUpTags().then((res) {
       if (mounted) {
         loadingState = res..dataOrNull?.removeFirstWhere((e) => e.tagid == 0);
@@ -59,7 +60,7 @@ class _GroupPanelState extends State<GroupPanel> {
       tags.isEmpty ? '0' : tags.join(','),
     );
     if (res.isSuccess) {
-      SmartDialog.showToast('操作成功');
+      SmartDialog.showToast('保存成功');
       Get.back(result: tags);
     } else {
       res.toast();
@@ -116,7 +117,7 @@ class _GroupPanelState extends State<GroupPanel> {
       Error(:final errMsg) => scrollErrorWidget(
         controller: widget.scrollController,
         errMsg: errMsg,
-        onReload: _query,
+        onReload: _queryFollowUpTags,
       ),
     };
   }
@@ -135,6 +136,22 @@ class _GroupPanelState extends State<GroupPanel> {
             icon: const Icon(Icons.close_outlined),
           ),
           title: const Text('设置关注分组'),
+          actions: [
+            TextButton.icon(
+              onPressed: () =>
+                  RequestUtils.createFavTag(context, _onCreateFavTag),
+              icon: Icon(Icons.add, color: theme.colorScheme.primary),
+              label: const Text('新建分组'),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 14,
+                ),
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            const SizedBox(width: 16),
+          ],
         ),
         Expanded(child: _buildBody),
         Divider(
@@ -157,5 +174,17 @@ class _GroupPanelState extends State<GroupPanel> {
         ),
       ],
     );
+  }
+
+  void _onCreateFavTag(({int tagid, String tagName}) res) {
+    if (!mounted) return;
+    if (loadingState case Success(:final response)) {
+      response.add(MemberTagItemModel.fromCreate(res, count: 1));
+      tags.add(res.tagid);
+      showDefaultBtn.value = false;
+      setState(() {});
+    } else {
+      _queryFollowUpTags();
+    }
   }
 }

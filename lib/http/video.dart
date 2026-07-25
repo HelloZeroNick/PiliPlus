@@ -28,6 +28,7 @@ import 'package:PiliPlus/models_new/video/video_note_list/data.dart';
 import 'package:PiliPlus/models_new/video/video_play_info/data.dart';
 import 'package:PiliPlus/models_new/video/video_relation/data.dart';
 import 'package:PiliPlus/models_new/video/video_shot/data.dart';
+import 'package:PiliPlus/utils/subtitle_utils.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/app_sign.dart';
 import 'package:PiliPlus/utils/extension/string_ext.dart';
@@ -209,6 +210,8 @@ abstract final class VideoHttp {
     required VideoType videoType,
     String? language,
   }) async {
+    final dmImgStr = Utils.base64EncodeRandomString(16, 64);
+    final dmCoverImgStr = Utils.base64EncodeRandomString(32, 128);
     final params = await WbiSign.makSign({
       'avid': ?avid,
       'bvid': ?bvid,
@@ -226,6 +229,10 @@ abstract final class VideoHttp {
       'web_location': 1315873,
       // 免登录查看1080p
       if (tryLook) 'try_look': 1,
+      'dm_img_list': '[]',
+      'dm_img_str': dmImgStr,
+      'dm_cover_img_str': dmCoverImgStr,
+      'dm_img_inter': '{"ds":[],"wh":[0,0,0],"of":[0,0,0]}',
       'cur_language': ?language,
     });
 
@@ -828,33 +835,20 @@ abstract final class VideoHttp {
     }
   }
 
-  static String _subtitleTimecode(num seconds) {
-    int h = seconds ~/ 3600;
-    seconds %= 3600;
-    int m = seconds ~/ 60;
-    seconds %= 60;
-    String sms = seconds.toStringAsFixed(3).padLeft(6, '0');
-    return h == 0
-        ? "${m.toString().padLeft(2, '0')}:$sms"
-        : "${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:$sms";
-  }
-
-  static String processList(List list) {
-    final sb = StringBuffer('WEBVTT\n\n')
-      ..writeAll(
-        list.map(
-          (item) =>
-              '${item?['sid'] ?? 0}\n${_subtitleTimecode(item['from'])} --> ${_subtitleTimecode(item['to'])}\n${item['content'].trim()}',
-        ),
-        '\n\n',
-      );
-    return sb.toString();
-  }
-
-  static Future<String?> vttSubtitles(String subtitleUrl) async {
+  static Future<String?> vttSubtitles(
+    String subtitleUrl, {
+    SubtitleFormat format = .vtt,
+  }) async {
     final res = await Request().get("https:$subtitleUrl");
     if (res.data?['body'] case List list) {
-      return compute<List, String>(processList, list);
+      switch (format) {
+        case .json:
+          throw UnimplementedError();
+        case .vtt:
+          return compute<List, String>(SubtitleUtils.json2Vtt, list);
+        case .srt:
+          return compute<List, String>(SubtitleUtils.json2Srt, list);
+      }
     }
     return null;
   }

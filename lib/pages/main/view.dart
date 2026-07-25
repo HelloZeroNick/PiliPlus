@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:PiliPlus/common/assets.dart';
 import 'package:PiliPlus/common/constants.dart';
 import 'package:PiliPlus/common/style.dart';
+import 'package:PiliPlus/common/widgets/floating_navigation_bar.dart';
 import 'package:PiliPlus/common/widgets/flutter/pop_scope.dart';
 import 'package:PiliPlus/common/widgets/flutter/tabs.dart';
 import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
@@ -273,93 +274,112 @@ class _MainAppState extends PopScopeState<MainApp>
   }
 
   Widget? get _bottomNav {
-    Widget? bottomNav = _mainController.navigationBars.length > 1
-        ? _mainController.enableLGBar.value
-              ? Obx(
-                  () {
-                    final theme = Theme.of(context);
-                    final primary = theme.colorScheme.primary;
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        width: 488,
-                        child: GlassBottomBar(
-                          quality: GlassQuality.premium,
-                          selectedIconColor: theme.colorScheme.primary,
-                          unselectedIconColor: theme.hintColor,
-                          indicatorColor: primary.withValues(alpha: 0.1),
-                          magnification: 1.2,
-                          indicatorSettings: LiquidGlassSettings(
-                            blur: 0,
-                            glassColor: primary.withValues(alpha: 0.2),
-                            saturation: 1.2,
-                            ambientStrength: 0.5,
-                            thickness: 30,
+    Widget? bottomNav;
+    if (_mainController.navigationBars.length > 1) {
+      if (_mainController.floatingNavBar) {
+        bottomNav = Obx(
+          () => FloatingNavigationBar(
+            onDestinationSelected: _mainController.setIndex,
+            selectedIndex: _mainController.selectedIndex.value,
+            destinations: _mainController.navigationBars
+                .map(
+                  (e) => FloatingNavigationDestination(
+                    label: e.label,
+                    icon: _buildIcon(type: e),
+                    selectedIcon: _buildIcon(type: e, selected: true),
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      } else if (_mainController.enableLGBar.value) {
+        bottomNav = Obx(
+          () {
+            final theme = Theme.of(context);
+            final primary = theme.colorScheme.primary;
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                width: 488,
+                child: GlassBottomBar(
+                  quality: GlassQuality.premium,
+                  selectedIconColor: theme.colorScheme.primary,
+                  unselectedIconColor: theme.hintColor,
+                  indicatorColor: primary.withValues(alpha: 0.1),
+                  magnification: 1.2,
+                  indicatorSettings: LiquidGlassSettings(
+                    blur: 0,
+                    glassColor: primary.withValues(alpha: 0.2),
+                    saturation: 1.2,
+                    ambientStrength: 0.5,
+                    thickness: 30,
+                  ),
+                  glassSettings: const LiquidGlassSettings(
+                    blur: 30,
+                    glassColor: Color.fromRGBO(255, 255, 255, 0.15),
+                    ambientStrength: 0.5,
+                    saturation: 1.2,
+                  ),
+                  verticalPadding: 16,
+                  barHeight: 56,
+                  selectedIndex: _mainController.selectedIndex.value,
+                  onTabSelected: _mainController.setIndex,
+                  tabs: _mainController.navigationBars
+                      .map(
+                        (e) => GlassBottomBarTab(
+                          label: e.label,
+                          icon: _buildIcon(type: e),
+                          activeIcon: _buildIcon(
+                            type: e,
+                            selected: true,
                           ),
-                          glassSettings: const LiquidGlassSettings(
-                            blur: 30,
-                            glassColor: Color.fromRGBO(255, 255, 255, 0.15),
-                            ambientStrength: 0.5,
-                            saturation: 1.2,
-                          ),
-                          verticalPadding: 16,
-                          barHeight: 56,
-                          selectedIndex: _mainController.selectedIndex.value,
-                          onTabSelected: _mainController.setIndex,
-                          tabs: _mainController.navigationBars
-                              .map(
-                                (e) => GlassBottomBarTab(
-                                  label: e.label,
-                                  icon: _buildIcon(type: e),
-                                  activeIcon: _buildIcon(
-                                    type: e,
-                                    selected: true,
-                                  ),
-                                ),
-                              )
-                              .toList(),
                         ),
-                      ),
-                    );
-                  },
-                )
-              : _mainController.enableMYBar
-              ? Obx(
-                  () => NavigationBar(
-                    maintainBottomViewPadding: true,
-                    onDestinationSelected: _mainController.setIndex,
-                    selectedIndex: _mainController.selectedIndex.value,
-                    destinations: _mainController.navigationBars
-                        .map(
-                          (e) => NavigationDestination(
-                            label: e.label,
-                            icon: _buildIcon(type: e),
-                            selectedIcon: _buildIcon(type: e, selected: true),
-                          ),
-                        )
-                        .toList(),
+                      )
+                      .toList(),
+                ),
+              ),
+            );
+          },
+        );
+      } else if (_mainController.enableMYBar) {
+        bottomNav = Obx(
+          () => NavigationBar(
+            maintainBottomViewPadding: true,
+            onDestinationSelected: _mainController.setIndex,
+            selectedIndex: _mainController.selectedIndex.value,
+            destinations: _mainController.navigationBars
+                .map(
+                  (e) => NavigationDestination(
+                    label: e.label,
+                    icon: _buildIcon(type: e),
+                    selectedIcon: _buildIcon(type: e, selected: true),
                   ),
                 )
-              : Obx(
-                  () => BottomNavigationBar(
-                    currentIndex: _mainController.selectedIndex.value,
-                    onTap: _mainController.setIndex,
-                    iconSize: 16,
-                    selectedFontSize: 12,
-                    unselectedFontSize: 12,
-                    type: .fixed,
-                    items: _mainController.navigationBars
-                        .map(
-                          (e) => BottomNavigationBarItem(
-                            label: e.label,
-                            icon: _buildIcon(type: e),
-                            activeIcon: _buildIcon(type: e, selected: true),
-                          ),
-                        )
-                        .toList(),
+                .toList(),
+          ),
+        );
+      } else {
+        bottomNav = Obx(
+          () => BottomNavigationBar(
+            currentIndex: _mainController.selectedIndex.value,
+            onTap: _mainController.setIndex,
+            iconSize: 16,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            type: .fixed,
+            items: _mainController.navigationBars
+                .map(
+                  (e) => BottomNavigationBarItem(
+                    label: e.label,
+                    icon: _buildIcon(type: e),
+                    activeIcon: _buildIcon(type: e, selected: true),
                   ),
                 )
-        : null;
+                .toList(),
+          ),
+        );
+      }
+    }
     if (bottomNav != null && _mainController.hideBottomBar) {
       if (_mainController.barOffset case final barOffset?) {
         return Obx(

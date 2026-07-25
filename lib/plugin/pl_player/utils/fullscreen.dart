@@ -79,22 +79,24 @@ Future<void> fullAutoModeForceSensor() {
   // return AutoOrientation.fullAutoMode(forceSensor: true);
 }
 
-bool _showStatusBar = true;
-Future<void> hideStatusBar() async {
-  if (!_showStatusBar) {
+bool _showSystemBar = true;
+bool get showSystemBar_ => _showSystemBar;
+
+Future<void> hideSystemBar() async {
+  if (!_showSystemBar) {
     return;
   }
-  _showStatusBar = false;
+  _showSystemBar = false;
   StatusBar.i.hidden = true;
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 }
 
 //退出全屏显示
-Future<void> showStatusBar() async {
-  if (_showStatusBar) {
+Future<void> showSystemBar() async {
+  if (_showSystemBar) {
     return;
   }
-  _showStatusBar = true;
+  _showSystemBar = true;
   StatusBar.i.hidden = false;
   SystemUiMode mode;
   if (Platform.isAndroid && (await Utils.sdkInt < 29)) {

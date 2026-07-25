@@ -7,7 +7,10 @@ import 'package:PiliPlus/models/member/tags.dart';
 import 'package:PiliPlus/pages/follow/child/child_controller.dart';
 import 'package:PiliPlus/pages/follow/child/child_view.dart';
 import 'package:PiliPlus/pages/follow/controller.dart';
+import 'package:PiliPlus/pages/follow_tag_sort/view.dart';
+import 'package:PiliPlus/utils/bili_utils.dart';
 import 'package:PiliPlus/utils/platform_utils.dart';
+import 'package:PiliPlus/utils/request_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
@@ -55,13 +58,26 @@ class _FollowPageState extends State<FollowPage> {
               }),
         actions: _followController.isOwner
             ? [
-                IconButton(
-                  onPressed: _onCreateTag,
-                  icon: const Icon(Icons.add),
-                  tooltip: '新建分组',
-                ),
-                IconButton(
-                  onPressed: () => Get.toNamed(
+            IconButton(
+              onPressed: () => RequestUtils.createFavTag(
+                context,
+                _followController.onCreateFavTag,
+              ),
+              icon: const Icon(Icons.add),
+              tooltip: '新建分组',
+            ),
+            IconButton(
+              onPressed: () {
+                if (_followController.followState.value is! Success) {
+                  return;
+                }
+                Get.to(FollowTagSortPage(controller: _followController));
+              },
+              icon: const Icon(Icons.sort),
+              tooltip: '分组排序',
+            ),
+            IconButton(
+              onPressed: () => Get.toNamed(
                     '/followSearch',
                     arguments: {
                       'mid': _followController.mid,
@@ -76,10 +92,10 @@ class _FollowPageState extends State<FollowPage> {
                     PopupMenuItem(
                       onTap: () => Get.toNamed('/blackListPage'),
                       child: const Row(
+                        spacing: 10,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.block, size: 19),
-                          SizedBox(width: 10),
                           Text('黑名单管理'),
                         ],
                       ),
@@ -103,10 +119,6 @@ class _FollowPageState extends State<FollowPage> {
     tagid: item?.tagid,
   );
 
-  bool _isCustomTag(int? tagid) {
-    return tagid != null && tagid != 0 && tagid != -10 && tagid != -2;
-  }
-
   Widget _buildBody(LoadingState loadingState) {
     return switch (loadingState) {
       Loading() => m3eLoading,
@@ -122,7 +134,7 @@ class _FollowPageState extends State<FollowPage> {
                 return Obx(() {
                   final item = _followController.tabs[index];
                   int? count = item.count;
-                  if (_isCustomTag(item.tagid)) {
+                  if (BiliUtils.isCustomFollowTag(item.tagid)) {
                     return GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onLongPress: () {
@@ -223,7 +235,8 @@ class _FollowPageState extends State<FollowPage> {
                   context: context,
                   title: const Text('删除分组'),
                   content: const Text('删除后，该分组下的用户依旧保留？'),
-                  onConfirm: () => _followController.onDelTag(item.tagid!),
+                  onConfirm: () =>
+                      _followController.onDelTag(index, item.tagid!),
                 );
               },
               dense: true,
@@ -238,21 +251,4 @@ class _FollowPageState extends State<FollowPage> {
     );
   }
 
-  void _onCreateTag() {
-    String tagName = '';
-    showConfirmDialog(
-      context: context,
-      title: const Text('新建分组'),
-      content: TextFormField(
-        autofocus: true,
-        initialValue: tagName,
-        onChanged: (value) => tagName = value,
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(16),
-        ],
-        decoration: const InputDecoration(border: OutlineInputBorder()),
-      ),
-      onConfirm: () => _followController.onCreateTag(tagName),
-    );
-  }
 }

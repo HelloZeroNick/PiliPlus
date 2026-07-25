@@ -60,6 +60,7 @@ class MainController extends GetxController
     enableLGBar.value = Pref.enableLGBar;
   }
 
+  final floatingNavBar = Pref.floatingNavBar;
   final useSideBar = Pref.useSideBar;
   final mainTabBarView = Pref.mainTabBarView;
   late final optTabletNav = Pref.optTabletNav;

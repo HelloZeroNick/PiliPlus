@@ -25,7 +25,9 @@ import 'package:PiliPlus/common/widgets/image_viewer/image.dart';
 import 'package:PiliPlus/common/widgets/image_viewer/loading_indicator.dart';
 import 'package:PiliPlus/common/widgets/image_viewer/viewer.dart';
 import 'package:PiliPlus/common/widgets/scroll_physics.dart';
+import 'package:PiliPlus/main.dart' show tmpPadding;
 import 'package:PiliPlus/models/common/image_preview_type.dart';
+import 'package:PiliPlus/plugin/pl_player/utils/fullscreen.dart';
 import 'package:PiliPlus/utils/extension/num_ext.dart';
 import 'package:PiliPlus/utils/extension/string_ext.dart';
 import 'package:PiliPlus/utils/image_utils.dart';
@@ -76,6 +78,7 @@ class _GalleryViewerState extends State<GalleryViewer>
   late final int _quality;
   late final RxInt _currIndex;
   GlobalKey? _key;
+  EdgeInsets? _padding;
 
   late bool _hasInit = false;
   Player? _player;
@@ -95,6 +98,8 @@ class _GalleryViewerState extends State<GalleryViewer>
 
   Offset _offset = Offset.zero;
   bool _dragging = false;
+
+  final _hideSystemBar = PlatformUtils.isMobile && showSystemBar_;
 
   String _getActualUrl(String url) {
     return _quality != 100
@@ -238,6 +243,23 @@ class _GalleryViewerState extends State<GalleryViewer>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_padding == null) {
+      final padding = MediaQuery.viewPaddingOf(context);
+      _padding = padding;
+      if (_hideSystemBar) {
+        tmpPadding = padding;
+        hideSystemBar()!.whenComplete(
+          () => WidgetsBinding.instance.addPostFrameCallback(
+            (_) => tmpPadding = null,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _player?.dispose();
     _player = null;
@@ -256,6 +278,10 @@ class _GalleryViewerState extends State<GalleryViewer>
           CachedNetworkImageProvider(_getActualUrl(item.url)).evict();
         }
       }
+    }
+    if (_hideSystemBar) {
+      showSystemBar();
+      tmpPadding = null;
     }
     Future.delayed(const Duration(milliseconds: 200), _currIndex.close);
     super.dispose();
@@ -312,8 +338,7 @@ class _GalleryViewerState extends State<GalleryViewer>
     child: IgnorePointer(
       child: Container(
         padding:
-            MediaQuery.viewPaddingOf(context) +
-            const EdgeInsets.fromLTRB(12, 8, 20, 8),
+            _padding! + const EdgeInsets.fromLTRB(12, 8, 20, 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

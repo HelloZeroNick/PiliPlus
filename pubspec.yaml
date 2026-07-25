@@ -1,4 +1,4 @@
-name: PiliPlus
+﻿name: PiliPlus
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 # update when release
-version: 2.0.1+5222
+version: 2.0.1+5228
 
 environment:
   sdk: ">=3.11.1"
@@ -31,7 +31,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   os_type: ^0.2.2
-  liquid_glass_widgets: ^0.8.4 # 液态玻璃
+  liquid_glass_widgets: ^0.8.4 # 娑叉€佺幓鐠?
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -39,92 +39,91 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.9
-  # 动态取色
+  # 鍔ㄦ€佸彇鑹?
   dynamic_color: ^1.8.1
 
   # get: ^4.7.2
   get:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/getx.git
+      url: https://github.com/bggRGjQaUbCoE/getx.git
       ref: 81b8a71982f89b46fa868b315cd71ff6a6ddf895
 
-  # 网络
+  # 缃戠粶
   dio: 5.9.2
   cookie_jar: ^4.0.9
   connectivity_plus: ^5.0.2
   connectivity_plus_ohos: ^0.0.3
   dio_http2_adapter: ^2.7.1
 
-  # 图片
+  # 鍥剧墖
   cached_network_image: ^3.4.1
   # extended_image: ^9.0.7
-  saver_gallery: ^4.1.0 # 已适配鸿蒙
+  saver_gallery: ^4.1.0 # 宸查€傞厤楦胯挋
 
   # QRCode
   # qr_flutter: ^4.1.0
   pretty_qr_code: ^3.6.0
 
-  # 存储
+  # 瀛樺偍
   path_provider: ^2.1.5
-  hive_ce: ^2.2.3
-  hive_flutter: ^1.1.0
+  hive_ce: ^2.19.3
 
-  # 设备信息
+  # 璁惧淇℃伅
   device_info_plus: ^10.1.0
-  # 权限
+  # 鏉冮檺
   # permission_handler: ^12.0.0+1
   permission_handler_apple: ^9.4.10
   permission_handler_android: ^13.0.1
   permission_handler_platform_interface: ^4.3.0
   permission_handler_ohos: ^0.0.8
-  # 分享
+  # 鍒嗕韩
   share_plus: ^10.1.1
-  # cookie 管理
+  # cookie 绠＄悊
   # webview_cookie_manager: ^2.0.6
-  # 浏览器
+  # 娴忚鍣?
   # webview_flutter: ^4.10.0
   flutter_inappwebview: ^6.1.5
-  # 解决sliver滑动不同步
+  # 瑙ｅ喅sliver婊戝姩涓嶅悓姝?
   # extended_nested_scroll_view: ^6.2.1
   extended_nested_scroll_view:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/extended_nested_scroll_view.git
+      url: https://github.com/bggRGjQaUbCoE/extended_nested_scroll_view.git
       ref: 161cd202c20bf0ba2394e3a86381d58864dc9e4e
-  # 上拉加载
+  # 涓婃媺鍔犺浇
   # loading_more_list: ^7.1.0
-  # 下拉刷新
+  # 涓嬫媺鍒锋柊
   # pull_to_refresh_notification: ^3.1.0
-  # 图标
+  # 鍥炬爣
   font_awesome_flutter: 10.9.0
   # material_design_icons_flutter: ^7.0.7296
   material_design_icons_flutter:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/material_design_icons_flutter.git
+      url: https://github.com/bggRGjQaUbCoE/material_design_icons_flutter.git
       ref: const
   # toast
   flutter_smart_dialog:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/flutter_smart_dialog.git
+      url: https://github.com/bggRGjQaUbCoE/flutter_smart_dialog.git
       ref: main
-  # 下滑关闭
+  # 涓嬫粦鍏抽棴
   # dismissible_page: ^1.0.2
   # custom_sliding_segmented_control: ^1.8.4
-  # 加密
+  # 鍔犲瘑
   crypto: ^3.0.7
   encrypt: ^5.0.3
 
-  # 视频播放器
+  # 瑙嗛鎾斁鍣?
   media_kit: # overridden
   media_kit_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./media_kit_video
   media_kit_libs_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./libs/universal/media_kit_libs_video
 
-  # 媒体通知
+  # 濯掍綋閫氱煡
   # audio_service: ^0.18.15
   audio_service:
     git:
@@ -137,70 +136,70 @@ dependencies:
       url: https://gitcode.com/CPF-Flutter/flutter_audio_session.git
       ref: br_v0.2.2_ohos
 
-  # 音量、亮度、屏幕控制
-  flutter_volume_controller: ^2.0.1 # 已支持鸿蒙
+  # 闊抽噺銆佷寒搴︺€佸睆骞曟帶鍒?
+  flutter_volume_controller: ^2.0.1 # 宸叉敮鎸侀缚钂?
   wakelock_plus: 1.3.3
   wakelock_plus_ohos: ^0.0.3
   # universal_platform: ^1.1.0
   # auto_orientation:
   #   git:
-  #     url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/auto_orientation.git
+  #     url: https://github.com/bggRGjQaUbCoE/auto_orientation.git
   #     ref: master
-  auto_orientation: # 自动旋转.鸿蒙适配
+  auto_orientation: # 鑷姩鏃嬭浆.楦胯挋閫傞厤
     git:
       url: "https://gitcode.com/CPF-Flutter/fluttertpc_auto_orientation"
   protobuf: ^6.0.0
   # animations: ^2.0.11
 
   url_launcher: ^6.3.1
-  # 防抖节流
+  # 闃叉姈鑺傛祦
   easy_debounce: ^2.0.3
-  # 高帧率
+  # 楂樺抚鐜?
   flutter_displaymode: ^0.7.0
-  # scheme跳转
+  # scheme璺宠浆
   app_links: ^6.4.1
   app_links_ohos: ^0.2.0
-  # 弹幕
+  # 寮瑰箷
   # ns_danmaku:
   #   git:
-  #     url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/flutter_ns_danmaku.git
+  #     url: https://github.com/bggRGjQaUbCoE/flutter_ns_danmaku.git
   #     ref: master
   canvas_danmaku:
     git:
-      url: https://gh.xmly.dev/https://github.com/Starfallan/canvas_danmaku.git
+      url: https://github.com/Starfallan/canvas_danmaku.git
       ref: main
-  # 状态栏图标控制
+  # 鐘舵€佹爮鍥炬爣鎺у埗
   # status_bar_control: ^3.2.1
-  # 代理
+  # 浠ｇ悊
   # system_proxy: ^0.1.0
   # pip
   # floating: ^3.0.0
   floating:
     git:
-      url: https://gh.xmly.dev/https://github.com/qinshah/floating.git
+      url: https://github.com/qinshah/floating.git
       ref: 3eefccb759c4ea8114e722f1511fe1dbce70dc9f
 
-    # html解析
+    # html瑙ｆ瀽
   html: ^0.15.6
-  # html渲染
+  # html娓叉煋
   flutter_html: ^3.0.0
-  # 极验
+  # 鏋侀獙
   gt3_flutter_plugin: ^0.1.1
   uuid: ^4.5.3
   # scrollable_positioned_list: ^0.3.8
   # nil: ^1.1.1
   catcher_2: ^2.1.9
   logger: ^2.7.0
-  #瀑布流
+  #鐎戝竷娴?
   waterfall_flow: ^3.1.1
-  #跑马灯
+  #璺戦┈鐏?
   # marquee: ^2.3.0
-  #富文本
+  #瀵屾枃鏈?
   # extended_text: ^14.1.0
   # chat_bottom_container: ^0.2.0
   chat_bottom_container:
     git:
-      url: https://gh.xmly.dev/https://github.com/qinshah/flutter_chat_packages.git
+      url: https://github.com/qinshah/flutter_chat_packages.git
       ref: dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5
       path: packages/chat_bottom_container
   image_picker: ^1.1.2
@@ -208,7 +207,7 @@ dependencies:
   archive: ^4.0.9
   flutter_svg: ^2.3.0
   image_cropper: ^11.0.0
-  #解压直播消息
+  #瑙ｅ帇鐩存挱娑堟伅
   brotli: ^0.6.0
   expandable: ^5.0.1
   flex_seed_scheme: ^3.6.1
@@ -219,30 +218,29 @@ dependencies:
   # webdav_client: ^1.2.2
   webdav_client:
     git:
-      url: https://gh.xmly.dev/https://github.com/wgh136/webdav_client.git
+      url: https://github.com/wgh136/webdav_client.git
       ref: main
   re_highlight: ^0.0.3
   flutter_sortable_wrap:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git
+      url: https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git
       ref: master
   web_socket_channel: ^3.0.3
   # image: ^4.7.1
   # window_manager: ^0.5.1
   window_manager:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/window_manager.git
+      url: https://github.com/bggRGjQaUbCoE/window_manager.git
       path: packages/window_manager
       ref: main
   tray_manager: ^0.5.3
-  # file_picker: ^10.3.3
-  file_picker:
+  file_picker_ohos:
     git:
       url: https://gitcode.com/CPF-Flutter/fluttertpc_file_picker.git
-      ref: br_v10.2.0_ohos
+      ref: br_v10.3.8_ohos
   super_sliver_list:
     git:
-      url: https://gh.xmly.dev/https://github.com/bggRGjQaUbCoE/super_sliver_list.git
+      url: https://github.com/bggRGjQaUbCoE/super_sliver_list.git
       ref: mod
   dlna_dart: ^0.1.1
   battery_plus: ^7.0.0
@@ -266,7 +264,7 @@ dependencies:
   cached_network_image_ce: any
 
 dependency_overrides:
-  meta: ^1.18.3 # 兼容液态玻璃
+  meta: ^1.18.3 # 鍏煎娑叉€佺幓鐠?
   device_info_plus:
     git:
       url: https://gitcode.com/CPF-Flutter/flutter_plus_plugins.git
@@ -281,21 +279,21 @@ dependency_overrides:
       url: "https://gitcode.com/CPF-Flutter/flutter_inappwebview.git"
       path: "flutter_inappwebview_platform_interface"
       ref: "br_v6.1.5_ohos"
-  video_player: # 视频播放器.鸿蒙适配
+  video_player: # 瑙嗛鎾斁鍣?楦胯挋閫傞厤
     git:
       url: https://gitcode.com/openharmony-tpc/flutter_packages.git
       path: packages/video_player/video_player
       ref: br_video_player-v2.9.2_ohos
-  url_launcher: # 打开链接.鸿蒙适配
+  url_launcher: # 鎵撳紑閾炬帴.楦胯挋閫傞厤
     git:
       url: https://gitcode.com/openharmony-tpc/flutter_packages.git
       path: packages/url_launcher/url_launcher
       ref: br_url_launcher_v6.3.1_ohos
-  path_provider: # 应用可用路径.鸿蒙适配
+  path_provider: # 搴旂敤鍙敤璺緞.楦胯挋閫傞厤
     git:
       url: "https://gitcode.com/openharmony-tpc/flutter_packages.git"
       path: "packages/path_provider/path_provider"
-  share_plus: # 分享.鸿蒙适配
+  share_plus: # 鍒嗕韩.楦胯挋閫傞厤
     git:
       url: https://gitcode.com/CPF-Flutter/flutter_plus_plugins.git
       path: packages/share_plus/share_plus
@@ -305,47 +303,47 @@ dependency_overrides:
   rxdart: ^0.28.0
   media_kit:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./media_kit
   media_kit_libs_linux:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./libs/linux/media_kit_libs_linux
   media_kit_libs_ios_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./libs/ios/media_kit_libs_ios_video
   media_kit_libs_macos_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./libs/macos/media_kit_libs_macos_video
   media_kit_libs_ohos:
     git:
-      url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+      url: https://github.com/Predidit/media-kit.git
       path: ./libs/ohos/media_kit_libs_ohos
   # media_kit_libs_android_video:
   #   git:
-  #     url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+  #     url: https://github.com/Predidit/media-kit.git
   #     path: ./libs/android/media_kit_libs_android_video
   # media_kit_libs_windows_video:
   #   git:
-  #     url: https://gh.xmly.dev/https://github.com/Predidit/media-kit.git
+  #     url: https://github.com/Predidit/media-kit.git
   #     path: ./libs/windows/media_kit_libs_windows_video
 
-  # 上游指定的media_kit
+  # 涓婃父鎸囧畾鐨刴edia_kit
   media_kit_native_event_loop:
     git:
-      url: https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git
+      url: https://github.com/My-Responsitories/media-kit.git
       path: media_kit_native_event_loop
       ref: version_1.2.5
   media_kit_libs_android_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git
+      url: https://github.com/My-Responsitories/media-kit.git
       path: libs/android/media_kit_libs_android_video
       ref: version_1.2.5
   media_kit_libs_windows_video:
     git:
-      url: https://gh.xmly.dev/https://github.com/My-Responsitories/media-kit.git
+      url: https://github.com/My-Responsitories/media-kit.git
       path: libs/windows/media_kit_libs_windows_video
       ref: version_1.2.5
   font_awesome_flutter: 10.9.0
@@ -356,7 +354,7 @@ dependency_overrides:
       ref: br_image_picker-v1.1.2_ohos
   win32: 5.5.3
   js: 0.7.0
-  # image_cropper 鸿蒙化适配
+  # image_cropper 楦胯挋鍖栭€傞厤
   image_cropper:
     git:
       url: https://gitcode.com/CPF-Flutter/fluttertpc_image_cropper.git

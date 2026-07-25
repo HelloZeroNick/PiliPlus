@@ -27,10 +27,10 @@ class _FavPanelState extends State<FavPanel> {
   @override
   void initState() {
     super.initState();
-    _query();
+    _queryVideoInFolder();
   }
 
-  Future<void> _query() async {
+  Future<void> _queryVideoInFolder() async {
     final res = await widget.ctr.queryVideoInFolder();
     if (mounted) {
       loadingState = res;
@@ -39,58 +39,60 @@ class _FavPanelState extends State<FavPanel> {
   }
 
   Widget get _buildBody {
-    late final list = widget.ctr.favFolderData.value.list!;
-    return switch (loadingState) {
-      Loading() => m3eLoading,
-      Success() => ListView.builder(
-        controller: widget.scrollController,
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          FavFolderInfo item = list[index];
-          return Material(
-            type: MaterialType.transparency,
-            child: Builder(
-              builder: (context) {
-                void onTap() {
-                  bool isChecked = item.favState == 1;
-                  item
-                    ..favState = isChecked ? 0 : 1
-                    ..mediaCount = isChecked
-                        ? item.mediaCount - 1
-                        : item.mediaCount + 1;
-                  (context as Element).markNeedsBuild();
-                }
+    switch (loadingState) {
+      case Loading():
+        return m3eLoading;
+      case Success():
+        final list = widget.ctr.favFolderData.value.list!;
+        return ListView.builder(
+          controller: widget.scrollController,
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            FavFolderInfo item = list[index];
+            return Material(
+              type: MaterialType.transparency,
+              child: Builder(
+                builder: (context) {
+                  final isChecked = item.favState == 1;
 
-                return ListTile(
-                  onTap: onTap,
-                  dense: true,
-                  leading: FavUtils.isPublicFav(item.attr)
-                      ? const Icon(Icons.folder_outlined)
-                      : const Icon(Icons.lock_outline),
-                  minLeadingWidth: 0,
-                  title: Text(item.title),
-                  subtitle: Text(
-                    '${item.mediaCount}个内容 . ${FavUtils.isPublicFavText(item.attr)}',
-                  ),
-                  trailing: Transform.scale(
-                    scale: 0.9,
-                    child: Checkbox(
-                      value: item.favState == 1,
-                      onChanged: (bool? checkValue) => onTap(),
+                  void onTap() {
+                    item
+                      ..favState = isChecked ? 0 : 1
+                      ..mediaCount += isChecked ? -1 : 1;
+                    (context as Element).markNeedsBuild();
+                  }
+
+                  return ListTile(
+                    onTap: onTap,
+                    dense: true,
+                    leading: FavUtils.isPublicFav(item.attr)
+                        ? const Icon(Icons.folder_outlined)
+                        : const Icon(Icons.lock_outline),
+                    minLeadingWidth: 0,
+                    title: Text(item.title),
+                    subtitle: Text(
+                      '${item.mediaCount}个内容 . ${FavUtils.isPublicFavText(item.attr)}',
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      ),
-      Error(:final errMsg) => scrollErrorWidget(
-        controller: widget.scrollController,
-        errMsg: errMsg,
-        onReload: _query,
-      ),
-    };
+                    trailing: Transform.scale(
+                      scale: 0.9,
+                      child: Checkbox(
+                        value: isChecked,
+                        onChanged: (bool? checkValue) => onTap(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        );
+      case Error(:final errMsg):
+        return scrollErrorWidget(
+          errMsg: errMsg,
+          controller: widget.scrollController,
+          onReload: _queryVideoInFolder,
+        );
+    }
   }
 
   @override
@@ -109,16 +111,17 @@ class _FavPanelState extends State<FavPanel> {
           actions: [
             TextButton.icon(
               onPressed: () => Get.toNamed('/createFav')?.then((data) {
-                if (data != null) {
-                  widget.ctr.favFolderData
-                    ..value.list?.insert(1, data)
-                    ..refresh();
+                if (data is FavFolderInfo && mounted) {
+                  widget.ctr.favFolderData.value.list?.insert(
+                    1,
+                    data
+                      ..favState = 1
+                      ..mediaCount = 1,
+                  );
+                  setState(() {});
                 }
               }),
-              icon: Icon(
-                Icons.add,
-                color: theme.primary,
-              ),
+              icon: Icon(Icons.add, color: theme.primary),
               label: const Text('新建收藏夹'),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

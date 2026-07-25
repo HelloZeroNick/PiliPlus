@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class SliderDialog extends StatefulWidget {
   final double value;
-  final String title;
+  final Widget title;
   final double min;
   final double max;
   final int? divisions;
@@ -37,7 +37,7 @@ class _SliderDialogState extends State<SliderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.title),
+      title: widget.title,
       contentPadding: const EdgeInsets.only(
         top: 20,
         left: 8,

@@ -26,6 +26,8 @@ const clampingScrollPhysics = CustomTabBarViewScrollPhysics(
   parent: ClampingScrollPhysics(),
 );
 
+const platformClampingScrollPhysics = clampingScrollPhysics;
+
 class CustomTabBarViewScrollPhysics extends ScrollPhysics {
   const CustomTabBarViewScrollPhysics({super.parent});
 

@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
@@ -6,6 +6,7 @@ import 'package:PiliPlus/common/assets.dart';
 import 'package:PiliPlus/common/style.dart';
 import 'package:PiliPlus/common/widgets/button/icon_button.dart';
 import 'package:PiliPlus/common/widgets/custom_icon.dart';
+import 'package:PiliPlus/common/widgets/extra_hittest_stack.dart';
 import 'package:PiliPlus/common/widgets/flutter/page/page_view.dart';
 import 'package:PiliPlus/common/widgets/flutter/pop_scope.dart';
 import 'package:PiliPlus/common/widgets/flutter/text_field/controller.dart';
@@ -38,11 +39,14 @@ import 'package:PiliPlus/utils/extension/num_ext.dart';
 import 'package:PiliPlus/utils/extension/size_ext.dart';
 import 'package:PiliPlus/utils/extension/theme_ext.dart';
 import 'package:PiliPlus/utils/image_utils.dart';
+import 'package:PiliPlus/utils/max_screen_size.dart';
 import 'package:PiliPlus/utils/mobile_observer.dart';
 import 'package:PiliPlus/utils/page_utils.dart';
 import 'package:PiliPlus/utils/platform_utils.dart';
 import 'package:PiliPlus/utils/storage.dart';
 import 'package:PiliPlus/utils/storage_key.dart';
+import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:PiliPlus/utils/theme_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
@@ -54,6 +58,8 @@ import 'package:get/get.dart';
 import 'package:os_type/os_type.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 
+const baseWhite = Color(0xFFEEEEEE);
+
 class LiveRoomPage extends StatefulWidget {
   const LiveRoomPage({super.key});
 
@@ -63,6 +69,7 @@ class LiveRoomPage extends StatefulWidget {
 
 class _LiveRoomPageState extends State<LiveRoomPage>
     with WidgetsBindingObserver, RouteAware, RouteAwareMixin {
+  late final fullScreenSCWidth = Pref.fullScreenSCWidth;
   final String heroTag = Utils.generateRandomString(6);
   late final LiveRoomController _liveRoomController;
   late final PlPlayerController plPlayerController;
@@ -88,6 +95,9 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     plPlayerController = _liveRoomController.plPlayerController
       ..addStatusLister(playerListener);
     PlPlayerController.setPlayCallBack(plPlayerController.play);
+    if (plPlayerController.removeSafeArea) {
+      hideSystemBar();
+    }
     // 画中画状态翻转时强制重建，防止 PiP 结束时无视口变化导致页面滞留在
     // 画中画布局（参见视频页同名逻辑）。
     _pipModeWorker = ever(plPlayerController.pipModeRx, (_) {
@@ -98,11 +108,20 @@ class _LiveRoomPageState extends State<LiveRoomPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    padding = MediaQuery.viewPaddingOf(context);
+    if (plPlayerController.removeSafeArea) {
+      padding = EdgeInsets.zero;
+    } else {
+      padding = MediaQuery.viewPaddingOf(context);
+    }
     final size = MediaQuery.sizeOf(context);
     maxWidth = size.width;
     maxHeight = size.height;
+    isWindowMode = MaxScreenSize.isWindowMode(
+      width: maxWidth * plPlayerController.uiScale,
+      height: maxHeight * plPlayerController.uiScale,
+    );
     isPortrait = size.isPortrait;
+    plPlayerController.screenRatio = maxHeight / maxWidth;
   }
 
   @override
@@ -206,6 +225,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
 
   late double maxWidth;
   late double maxHeight;
+  bool isWindowMode = false;
   late EdgeInsets padding;
   late bool isPortrait;
 
@@ -231,7 +251,10 @@ class _LiveRoomPageState extends State<LiveRoomPage>
         child: child,
       );
     }
-    return child;
+    return Theme(
+      data: ThemeUtils.darkTheme,
+      child: child,
+    );
   }
 
   Widget videoPlayerPanel(
@@ -243,9 +266,6 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     Alignment alignment = Alignment.center,
     bool needDm = true,
   }) {
-    if (!plPlayerController.isLive) {
-      return const SizedBox.shrink();
-    }
     if (!isFullScreen && !plPlayerController.isDesktopPip) {
       _liveRoomController.fsSC.value = null;
     }
@@ -253,7 +273,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     Widget player = Obx(
       key: playerKey,
       () {
-        if (_liveRoomController.isLoaded.value) {
+        if (_liveRoomController.isLoaded.value && plPlayerController.isLive) {
           final roomInfoH5 = _liveRoomController.roomInfoH5.value;
           return PLVideoPlayer(
             maxWidth: width,
@@ -270,6 +290,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               onPlayAudio: _liveRoomController.queryLiveUrl,
               isPortrait: isPortrait,
               liveController: _liveRoomController,
+              onlineWidget: _liveRoomController.onlineWidget,
             ),
             bottomControl: BottomControl(
               plPlayerController: plPlayerController,
@@ -331,21 +352,18 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 return const SizedBox.shrink();
               }
               try {
-                return Stack(
+                return ExtraHitTestStack(
                   key: ValueKey(item.id),
                   clipBehavior: Clip.none,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6, top: 6),
-                      child: SuperChatCard(
-                        item: item,
-                        onRemove: () => _liveRoomController.fsSC.value = null,
-                        onReport: () => _liveRoomController.reportSC(item),
-                      ),
+                    SuperChatCard(
+                      item: item,
+                      onRemove: () => _liveRoomController.fsSC.value = null,
+                      onReport: () => _liveRoomController.reportSC(item),
                     ),
                     Positioned(
-                      right: 0,
-                      top: 0,
+                      right: -6,
+                      top: -6,
                       child: iconButton(
                         size: 24,
                         iconSize: 14,
@@ -413,9 +431,12 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               },
             ),
           Scaffold(
+            primary: !plPlayerController.removeSafeArea,
             resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
-            appBar: _buildAppBar(isFullScreen),
+            appBar: isWindowMode && isFullScreen && !isPortrait
+                ? null
+                : _buildAppBar(isFullScreen),
             body: isPortrait
                 ? Obx(
                     () {
@@ -805,12 +826,12 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                             ? const Icon(
                                 size: 22,
                                 CustomIcons.dm_on,
-                                color: Color(0xFFEEEEEE),
+                                color: baseWhite,
                               )
                             : const Icon(
                                 size: 22,
                                 CustomIcons.dm_off,
-                                color: Color(0xFFEEEEEE),
+                                color: baseWhite,
                               ),
                       ),
                     );
@@ -819,7 +840,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 const Expanded(
                   child: Text(
                     '发送弹幕',
-                    style: TextStyle(color: Color(0xFFEEEEEE)),
+                    style: TextStyle(color: baseWhite),
                   ),
                 ),
                 Builder(
@@ -840,7 +861,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                               dimension: 34,
                               child: Icon(
                                 size: 22,
-                                color: Color(0xFFEEEEEE),
+                                color: baseWhite,
                                 Icons.thumb_up_off_alt,
                               ),
                             ),
@@ -888,7 +909,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                     onPressed: () => _liveRoomController.onSendDanmaku(true),
                     icon: const Icon(
                       size: 22,
-                      color: Color(0xFFEEEEEE),
+                      color: baseWhite,
                       Icons.emoji_emotions_outlined,
                     ),
                   ),

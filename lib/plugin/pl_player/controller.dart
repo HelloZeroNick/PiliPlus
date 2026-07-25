@@ -139,6 +139,11 @@ class PlPlayerController with BlockConfigMixin {
 
   bool _isVertical = false;
 
+  late final removeSafeArea = Pref.removeSafeArea;
+  late final uiScale = Pref.uiScale;
+  double screenRatio = 1.0;
+  bool visible = true;
+
   /// 视频比例
   final Rx<VideoFitType> videoFit = Rx(VideoFitType.contain);
 
@@ -775,9 +780,7 @@ class PlPlayerController with BlockConfigMixin {
 
     final player = Player(
       configuration: PlayerConfiguration(
-        bufferSize: Pref.expandBuffer
-            ? (isLive ? 64 * 1024 * 1024 : 32 * 1024 * 1024)
-            : (isLive ? 16 * 1024 * 1024 : 4 * 1024 * 1024),
+        bufferSize: (Pref.bufferSize * (isLive ? 0x200000 : 0x100000)).toInt(),
         logLevel: kDebugMode ? .warn : .error,
       ),
     );
@@ -1632,7 +1635,7 @@ class PlPlayerController with BlockConfigMixin {
 
       if (status) {
         if (PlatformUtils.isMobile) {
-          hideStatusBar();
+          hideSystemBar();
           if (mode == FullScreenMode.none) {
             return;
           }
@@ -1654,7 +1657,7 @@ class PlPlayerController with BlockConfigMixin {
         }
       } else {
         if (PlatformUtils.isMobile) {
-          showStatusBar();
+          showSystemBar();
           if (mode == FullScreenMode.none) {
             return;
           }
