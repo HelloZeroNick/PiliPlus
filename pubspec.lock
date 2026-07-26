@@ -491,18 +491,18 @@ packages:
     dependency: "direct main"
     description:
       name: dio_http2_adapter
-      sha256: c48daafd9cded83368ba0b7d731db6bc9d0413fe21727abf1575780b7c8a74a1
+      sha256: c56522c50bb3bab7e3ca77c153b0f03ae672a87d8c32e46be8f2868693ec9f0a
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.8.0"
+    version: "2.7.1"
   dio_web_adapter:
     dependency: transitive
     description:
       name: dio_web_adapter
-      sha256: "0786d0b7295a373de356fc0af4f6f1d0ab2844ed31b19dfc5e7556b70e24212c"
+      sha256: dd58dc3861eb36edb13b217efc006a1c21e5bbc341de8c229b85634fa5e362e4
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.0"
   dlna_dart:
     dependency: "direct main"
     description:
@@ -597,8 +597,8 @@ packages:
     description:
       path: "."
       ref: "br_v10.3.8_ohos"
-      resolved-ref: "31cc1f314557517e65694ac1744567670f0829c2"
-      url: "https://gitcode.com/CPF-Flutter/fluttertpc_file_picker.git"
+      resolved-ref: "824dfa0852f532838331350fece147a8de57cfcc"
+      url: "https://gitcode.com/hellozeronick/fluttertpc_file_picker.git"
     source: git
     version: "10.3.8"
   file_selector_linux:
@@ -675,10 +675,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_cache_manager
-      sha256: "1de7849213b4c73c85aca7e0ac687a9a5d82ccdb594366b9dcc26cb6a2189cd2"
+      sha256: "400b6592f16a4409a7f2bb929a9a7e38c72cceb8ffb99ee57bbf2cb2cecf8386"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.4.2"
+    version: "3.4.1"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -1592,10 +1592,10 @@ packages:
     dependency: transitive
     description:
       name: posix
-      sha256: bc1bad54ad2b735816e31f8d4600cfde6c7839975085ddfbca48b6c9f7c4044e
+      sha256: "185ef7606574f789b40f289c233efa52e96dead518aed988e040a10737febb07"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.5.2"
+    version: "6.5.0"
   pretty_qr_code:
     dependency: "direct main"
     description:

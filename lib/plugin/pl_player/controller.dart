@@ -839,7 +839,20 @@ class PlPlayerController with BlockConfigMixin {
 
     final Map<String, String> extras = {};
 
+    if (!isFileSource) {
+      if (isLive) {
+        extras.addAll(Pref.initLiveBuffer());
+      } else {
+        extras.addAll(Pref.initBuffer(_playbackSpeed.value));
+      }
+    }
+
     String video = dataSource.videoSource;
+    if (OS.isHarmony && dataSource is FileSource) {
+      // 鸿蒙：mpv 的 OHOS 后端用原生文件 API 打开文件，与 Dart 的 File 沙箱
+      // 路径命名空间可能不同。加 file:// 前缀让 mpv 以 URI 方式打开本地文件。
+      video = 'file://$video';
+    }
     if (dataSource.audioSource case final audio? when (audio.isNotEmpty)) {
       if (onlyPlayAudio.value) {
         video = audio;
@@ -882,6 +895,22 @@ class PlPlayerController with BlockConfigMixin {
       }
     }
 
+    if (OS.isHarmony) {
+      // 鸿蒙：mpv 的 vo/gpu-next/ohos 后端需要 native rendering surface
+      // 已有有效尺寸才能正确初始化 VO 窗口。OHOS 上 XComponent（Video
+      // widget 底层）的 native surface 创建是跨进程异步的，Flutter 首帧
+      // 渲染完成后 surface 仍未完全就绪（实测 Resize 事件晚 1s+）。
+      // 连续等待多帧 + 额外延迟确保 surface 已初始化。
+      for (int i = 0; i < 3; i++) {
+        try {
+          await WidgetsBinding.instance.endOfFrame;
+        } catch (_) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+      }
+      // 给 OHOS 的 XComponent RenderService 额外的初始化时间
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
     await player.open(
       Media(
         video,
