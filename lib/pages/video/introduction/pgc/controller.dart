@@ -188,54 +188,56 @@ class PgcIntroController extends CommonIntroController {
                   Utils.shareText(videoUrl);
                 },
               ),
-            ListTile(
-              dense: true,
-              title: const Text(
-                '分享至动态',
-                style: TextStyle(fontSize: 14),
+            if (isLogin)
+              ListTile(
+                dense: true,
+                title: const Text(
+                  '分享至动态',
+                  style: TextStyle(fontSize: 14),
+                ),
+                onTap: () {
+                  Get.back();
+                  EpisodeItem? item = pgcItem.episodes?.firstWhereOrNull(
+                    (item) => item.epId == epId,
+                  );
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    builder: (context) => RepostPanel(
+                      rid: epId,
+                      /**
+                           *  1：番剧 // 4097
+                              2：电影 // 4098
+                              3：纪录片 // 4101
+                              4：国创 // 4100
+                              5：电视剧 // 4099
+                              6：漫画
+                              7：综艺 // 4099
+                           */
+                      dynType: switch (pgcItem.type) {
+                        1 => 4097,
+                        2 => 4098,
+                        3 => 4101,
+                        4 => 4100,
+                        5 || 7 => 4099,
+                        _ => -1,
+                      },
+                      pic: pgcItem.cover,
+                      title:
+                          '${pgcItem.title}${item != null ? '\n${item.showTitle}' : ''}',
+                      uname: '',
+                    ),
+                  );
+                },
               ),
-              onTap: () {
-                Get.back();
-                EpisodeItem? item = pgcItem.episodes?.firstWhereOrNull(
-                  (item) => item.epId == epId,
-                );
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  builder: (context) => RepostPanel(
-                    rid: epId,
-                    /**
-                         *  1：番剧 // 4097
-                            2：电影 // 4098
-                            3：纪录片 // 4101
-                            4：国创 // 4100
-                            5：电视剧 // 4099
-                            6：漫画
-                            7：综艺 // 4099
-                         */
-                    dynType: switch (pgcItem.type) {
-                      1 => 4097,
-                      2 => 4098,
-                      3 => 4101,
-                      4 => 4100,
-                      5 || 7 => 4099,
-                      _ => -1,
-                    },
-                    pic: pgcItem.cover,
-                    title:
-                        '${pgcItem.title}${item != null ? '\n${item.showTitle}' : ''}',
-                    uname: '',
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text(
-                '分享至消息',
-                style: TextStyle(fontSize: 14),
-              ),
+            if (isLogin)
+              ListTile(
+                dense: true,
+                title: const Text(
+                  '分享至消息',
+                  style: TextStyle(fontSize: 14),
+                ),
               onTap: () {
                 Get.back();
                 try {

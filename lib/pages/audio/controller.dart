@@ -580,34 +580,35 @@ class AudioController extends GetxController
                   }
                 },
               ),
-            ListTile(
-              dense: true,
-              title: const Text(
-                '分享至动态',
-                style: TextStyle(fontSize: 14),
+            if (isLogin)
+              ListTile(
+                dense: true,
+                title: const Text(
+                  '分享至动态',
+                  style: TextStyle(fontSize: 14),
+                ),
+                onTap: () {
+                  Get.back();
+                  if (audioItem.value case DetailItem(
+                    :final arc,
+                    :final owner,
+                  )) {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      builder: (context) => RepostPanel(
+                        rid: oid.toInt(),
+                        dynType: isUgc ? 8 : 256,
+                        pic: arc.cover,
+                        title: arc.title,
+                        uname: owner.name,
+                      ),
+                    );
+                  }
+                },
               ),
-              onTap: () {
-                Get.back();
-                if (audioItem.value case DetailItem(
-                  :final arc,
-                  :final owner,
-                )) {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    builder: (context) => RepostPanel(
-                      rid: oid.toInt(),
-                      dynType: isUgc ? 8 : 256,
-                      pic: arc.cover,
-                      title: arc.title,
-                      uname: owner.name,
-                    ),
-                  );
-                }
-              },
-            ),
-            if (isUgc)
+            if (isUgc && isLogin)
               ListTile(
                 dense: true,
                 title: const Text(
