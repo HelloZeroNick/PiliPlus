@@ -7,7 +7,9 @@ import 'package:PiliPlus/common/widgets/scroll_physics.dart';
 import 'package:PiliPlus/common/widgets/view_safe_area.dart';
 import 'package:PiliPlus/models/common/image_preview_type.dart';
 import 'package:PiliPlus/models/common/member/user_info_type.dart';
+import 'package:PiliPlus/models/model_owner.dart';
 import 'package:PiliPlus/models_new/space/space/card.dart';
+import 'package:PiliPlus/models_new/space/space/elec.dart';
 import 'package:PiliPlus/models_new/space/space/followings_followed_upper.dart';
 import 'package:PiliPlus/models_new/space/space/images.dart';
 import 'package:PiliPlus/models_new/space/space/live.dart';
@@ -18,6 +20,8 @@ import 'package:PiliPlus/pages/follow/view.dart';
 import 'package:PiliPlus/pages/follow_type/followed/view.dart';
 import 'package:PiliPlus/pages/member/widget/header_layout_widget.dart';
 import 'package:PiliPlus/pages/member/widget/medal_widget.dart';
+import 'package:PiliPlus/pages/member_guard/view.dart';
+import 'package:PiliPlus/pages/member_upower_rank/view.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/app_scheme.dart';
 import 'package:PiliPlus/utils/extension/context_ext.dart';
@@ -47,6 +51,10 @@ class UserInfoCard extends StatelessWidget {
     this.silence,
     required this.headerControllerBuilder,
     required this.showLiveMedalWall,
+    required this.charges,
+    required this.chargeCount,
+    required this.guards,
+    required this.guardCount,
   });
 
   final bool isOwner;
@@ -58,6 +66,10 @@ class UserInfoCard extends StatelessWidget {
   final int? silence;
   final ValueGetter<PageController> headerControllerBuilder;
   final VoidCallback showLiveMedalWall;
+  final List<ElecItem>? charges;
+  final Object? chargeCount;
+  final List<Owner>? guards;
+  final Object? guardCount;
 
   @override
   Widget build(BuildContext context) {

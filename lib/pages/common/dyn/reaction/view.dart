@@ -77,7 +77,7 @@ class DynReactPage extends StatelessWidget {
     }
 
     final child = CustomScrollView(
-      key: const PageStorageKey(DynType.reaction),
+      key: const PageStorageKey('DynReactPage'),
       slivers: [
         SliverPadding(
           padding: .only(

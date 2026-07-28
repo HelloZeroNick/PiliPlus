@@ -675,8 +675,7 @@ abstract final class Pref {
   static int get fullScreenSCWidth =>
       _setting.get(SettingBoxKey.fullScreenSCWidth, defaultValue: 300);
 
-  static int get liveStream =>
-      _setting.get(SettingBoxKey.liveStream, defaultValue: 0);
+  static List? get liveStream => _setting.get(SettingBoxKey.liveStream);
 
   static bool get dynamicsWaterfallFlow =>
       _setting.get(SettingBoxKey.dynamicsWaterfallFlow, defaultValue: true);
@@ -1024,4 +1023,5 @@ abstract final class Pref {
 
   static bool get saveReply =>
       _setting.get(SettingBoxKey.saveReply, defaultValue: true);
+
 }

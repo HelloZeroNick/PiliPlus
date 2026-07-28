@@ -10,6 +10,7 @@ import 'package:PiliPlus/models_new/dynamic/dyn_topic_pub_search/data.dart';
 import 'package:PiliPlus/models_new/pgc/pgc_info_model/result.dart';
 import 'package:PiliPlus/models_new/search/search_rcmd/data.dart';
 import 'package:PiliPlus/models_new/search/search_trending/data.dart';
+import 'package:PiliPlus/models_new/video/video_detail/dimension.dart';
 import 'package:PiliPlus/utils/request_utils.dart';
 import 'package:PiliPlus/utils/wbi_sign.dart';
 import 'package:dio/dio.dart';
@@ -168,6 +169,39 @@ abstract final class SearchHttp {
       }
     } else {
       return Error(res.data['message'] ?? '没有相关数据');
+    }
+  }
+
+  static Future<({int? cid, Dimension? dimension})?> ab2cWithDimension({
+    dynamic aid,
+    dynamic bvid,
+    int? part,
+  }) async {
+    final res = await Request().get(
+      Api.ab2c,
+      queryParameters: {
+        'aid': ?aid,
+        'bvid': ?bvid,
+      },
+    );
+    if (res.data['code'] == 0) {
+      if (res.data['data'] case List list) {
+        final target = part != null
+            ? (list.elementAtOrNull(part - 1) ?? list.firstOrNull)
+            : list.firstOrNull;
+        if (target != null) {
+          return (
+            cid: target['cid'] as int?,
+            dimension: target['dimension'] == null
+                ? null
+                : Dimension.fromJson(target['dimension']),
+          );
+        }
+      }
+      return null;
+    } else {
+      SmartDialog.showToast("ab2c error: ${res.data['message']}");
+      return null;
     }
   }
 

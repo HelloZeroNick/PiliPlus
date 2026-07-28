@@ -35,8 +35,14 @@ class DynReactController
   }
 
   @override
-  Future<LoadingState<DynReactionData>> customGetData() =>
-      DynamicsHttp.dynReaction(id: id, offset: _offset);
+  Future<LoadingState<DynReactionData>> customGetData() {
+    final idStr = id.toString();
+    return DynamicsHttp.dynReaction(
+      dynamicId: idStr,
+      rid: int.tryParse(idStr) ?? 0,
+      page: page,
+    );
+  }
 
   @override
   Future<void> onRefresh() {

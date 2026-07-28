@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:PiliPlus/common/widgets/flutter/selectable_text/selection_area.dart';
 import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
@@ -181,6 +181,7 @@ class _SuperChatCardState extends State<SuperChatCard> {
               image: item.backgroundImage == null
                   ? null
                   : DecorationImage(
+                      alignment: .topRight,
                       image: CachedNetworkImageProvider(
                         ImageUtils.safeThumbnailUrl(item.backgroundImage),
                       ),

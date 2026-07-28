@@ -11,6 +11,7 @@ import 'package:PiliPlus/models/common/image_preview_type.dart';
 import 'package:PiliPlus/models/common/video/video_type.dart';
 import 'package:PiliPlus/models/dynamics/result.dart';
 import 'package:PiliPlus/models_new/pgc/pgc_info_model/episode.dart';
+import 'package:PiliPlus/models_new/video/video_detail/dimension.dart';
 import 'package:PiliPlus/pages/common/common_intro_controller.dart';
 import 'package:PiliPlus/pages/common/publish/publish_route.dart';
 import 'package:PiliPlus/pages/contact/view.dart';
@@ -560,6 +561,8 @@ abstract final class PageUtils {
     int? progress, // milliseconds
     Map? extraArguments,
     bool off = false,
+    bool isVertical = false,
+    Dimension? dimension,
   }) {
     final arguments = {
       'aid': aid ?? IdUtils.bv2av(bvid!),
@@ -572,6 +575,7 @@ abstract final class PageUtils {
       'title': ?title,
       'progress': ?progress,
       'videoType': videoType,
+      'isVertical': dimension?.isVertical ?? isVertical,
       'heroTag': Utils.makeHeroTag(cid),
       ...?extraArguments,
     };

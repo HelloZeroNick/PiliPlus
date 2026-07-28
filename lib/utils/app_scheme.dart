@@ -7,6 +7,7 @@ import 'package:PiliPlus/http/search.dart';
 import 'package:PiliPlus/models/common/fav_type.dart';
 import 'package:PiliPlus/models/common/video/source_type.dart';
 import 'package:PiliPlus/pages/audio/view.dart';
+import 'package:PiliPlus/pages/dynamics/widgets/vote.dart';
 import 'package:PiliPlus/pages/fan/view.dart';
 import 'package:PiliPlus/pages/follow/view.dart';
 import 'package:PiliPlus/pages/follow_type/followed/view.dart';
@@ -476,12 +477,25 @@ abstract final class PiliScheme {
 
     final String path = uri.path;
 
+    late final queryParameters = uri.queryParameters;
+
     if (host.contains('t.bilibili.com')) {
-      bool hasMatch = _onPushDynDetail(uri, off);
-      if (!hasMatch) {
-        launchURL();
+      if (_onPushDynDetail(uri, off)) {
+        return true;
+      } else if (path.startsWith('/vote')) {
+        // t.bilibili.com/vote/h5/index?vote_id={{vote_id}}#/result
+        if (queryParameters['vote_id'] case final voteIdStr?) {
+          final voteId = int.tryParse(voteIdStr);
+          if (voteId != null) {
+            if (Get.context != null) {
+              showVoteDialog(Get.context!, voteId);
+            }
+            return true;
+          }
+        }
       }
-      return hasMatch;
+      launchURL();
+      return false;
     } else if (host.contains('live.bilibili.com')) {
       String? roomId = uriDigitRegExp.firstMatch(path)?.group(1);
       if (roomId != null) {
@@ -802,6 +816,15 @@ abstract final class PiliScheme {
             oid: int.parse(oid),
             from: PlaylistSource.AUDIO_CARD,
           );
+          return true;
+        }
+        launchURL();
+        return false;
+      case 'bubble':
+        // https://www.bilibili.com/bubble/home/1
+        final id = uriDigitRegExp.firstMatch(path)?.group(1);
+        if (id != null) {
+          Get.toNamed('/bubble', arguments: {'id': id});
           return true;
         }
         launchURL();

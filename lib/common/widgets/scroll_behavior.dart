@@ -23,3 +23,14 @@ const Set<PointerDeviceKind> desktopDragDevices = <PointerDeviceKind>{
   PointerDeviceKind.unknown,
   PointerDeviceKind.mouse,
 };
+
+class NoOverscrollIndicator extends MaterialScrollBehavior {
+  const NoOverscrollIndicator();
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) => child;
+}

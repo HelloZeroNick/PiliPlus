@@ -279,6 +279,8 @@ class PageInfo {
 
   bool get cacheWidth => width <= height;
 
+  bool get isVertical => rotate == 1 ? width > height : height > width;
+
   PageInfo({
     required this.cid,
     required this.page,
